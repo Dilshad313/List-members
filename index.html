@@ -20,6 +20,7 @@
   --danger: #e03131;
   --warning: #f08c00;
   --info: #1971c2;
+  --purple: #7048e8;
   --border: #e0e0e0;
   --text: #212529;
   --text-light: #6c757d;
@@ -35,7 +36,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1250px;
   margin: 0 auto;
 }
 
@@ -60,21 +61,22 @@ body {
   letter-spacing: 2px;
 }
 
+/* Stats */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
   margin-bottom: 25px;
 }
 
 .stat-card {
   background: #fff;
-  padding: 18px;
+  padding: 16px;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   border-left: 5px solid var(--info);
   transition: transform 0.2s;
 }
@@ -87,20 +89,23 @@ body {
 .stat-card.called { border-color: var(--warning); }
 .stat-card.coming { border-color: var(--success); }
 .stat-card.not-coming { border-color: var(--danger); }
+.stat-card.people { border-color: var(--purple); }
+.stat-card.families { border-color: var(--primary); }
 
-.stat-icon { font-size: 2rem; }
+.stat-icon { font-size: 1.8rem; }
 
 .stat-value {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--text);
 }
 
 .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-light);
 }
 
+/* Form */
 .form-section, .list-section {
   background: #fff;
   padding: 25px;
@@ -113,6 +118,41 @@ body {
   margin-bottom: 18px;
   color: var(--primary-dark);
   font-size: 1.25rem;
+}
+
+/* Entry Type Toggle */
+.type-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: var(--secondary);
+  padding: 6px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.type-btn {
+  padding: 10px 24px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: var(--text-light);
+}
+
+.type-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(214,51,108,0.3);
+}
+
+.type-btn:not(.active):hover {
+  background: #e9ecef;
+  color: var(--text);
 }
 
 .form-row {
@@ -135,8 +175,19 @@ body {
   color: var(--text);
 }
 
+.form-group label .optional {
+  color: var(--text-light);
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.form-group label .required {
+  color: var(--danger);
+}
+
 .form-group input[type="text"],
 .form-group input[type="tel"],
+.form-group input[type="number"],
 .form-group select,
 .form-group textarea {
   padding: 11px 14px;
@@ -153,6 +204,46 @@ body {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(214,51,108,0.1);
+}
+
+/* Count input with buttons */
+.count-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count-input-wrap input {
+  flex: 1;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem !important;
+}
+
+.count-btn {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--primary);
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.count-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+
+.count-btn:active {
+  transform: scale(0.95);
 }
 
 .radio-group {
@@ -249,6 +340,7 @@ body {
   color: #fff;
 }
 
+/* List */
 .list-header {
   display: flex;
   justify-content: space-between;
@@ -293,7 +385,7 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 900px;
+  min-width: 1050px;
 }
 
 thead {
@@ -322,6 +414,37 @@ tbody tr {
 
 tbody tr:hover {
   background: #fdf6ff;
+}
+
+tbody tr.family-row {
+  background: #fdf6ff;
+}
+
+tbody tr.family-row:hover {
+  background: #f8ebff;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.type-individual { background: #e7f5ff; color: #1971c2; }
+.type-family { background: #fff3bf; color: #e67700; }
+
+.count-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: #fff;
+  white-space: nowrap;
 }
 
 .badge {
@@ -375,6 +498,7 @@ tbody tr:hover {
   transform: translateX(400px);
   transition: transform 0.3s;
   z-index: 999;
+  max-width: 90vw;
 }
 
 .toast.show { transform: translateX(0); }
@@ -389,8 +513,12 @@ tbody tr:hover {
   .list-controls input,
   .list-controls select,
   .list-controls .btn { width: 100%; }
-  .stat-card { padding: 14px; }
-  .stat-value { font-size: 1.4rem; }
+  .stat-card { padding: 12px; }
+  .stat-value { font-size: 1.3rem; }
+  .type-toggle { width: 100%; }
+  .type-btn { flex: 1; padding: 10px 12px; font-size: 0.85rem; }
+  .toast { left: 20px; right: 20px; transform: translateY(200px); }
+  .toast.show { transform: translateY(0); }
 }
 </style>
 </head>
@@ -402,12 +530,27 @@ tbody tr:hover {
     <p class="subtitle">Wedding Invitation Tracker</p>
   </header>
 
+  <!-- Stats -->
   <div class="stats-grid">
     <div class="stat-card total">
-      <span class="stat-icon">👥</span>
+      <span class="stat-icon">📋</span>
       <div>
         <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">മൊത്തം എൻട്രികൾ</div>
+      </div>
+    </div>
+    <div class="stat-card people">
+      <span class="stat-icon">👥</span>
+      <div>
+        <div class="stat-value" id="statPeople">0</div>
         <div class="stat-label">മൊത്തം ആളുകൾ</div>
+      </div>
+    </div>
+    <div class="stat-card families">
+      <span class="stat-icon">🏠</span>
+      <div>
+        <div class="stat-value" id="statFamilies">0</div>
+        <div class="stat-label">കുടുംബങ്ങൾ</div>
       </div>
     </div>
     <div class="stat-card called">
@@ -433,29 +576,50 @@ tbody tr:hover {
     </div>
   </div>
 
+  <!-- Form -->
   <section class="form-section">
-    <h2 id="formTitle">➕ പുതിയ വ്യക്തിയെ ചേർക്കുക</h2>
+    <h2 id="formTitle">➕ പുതിയ എൻട്രി ചേർക്കുക</h2>
+
+    <!-- Type Toggle -->
+    <div class="type-toggle" id="typeToggle">
+      <button type="button" class="type-btn active" data-type="individual">👤 വ്യക്തി (Individual)</button>
+      <button type="button" class="type-btn" data-type="family">🏠 കുടുംബം (Family)</button>
+    </div>
+
     <form id="guestForm">
       <input type="hidden" id="editId">
+      <input type="hidden" id="entryType" value="individual">
 
+      <!-- Names -->
       <div class="form-row">
         <div class="form-group">
-          <label for="nameMalayalam">പേര് (മലയാളം) *</label>
-          <input type="text" id="nameMalayalam" placeholder="ഉദാ: രാജേഷ് കുമാർ" required>
+          <label for="nameMalayalam" id="labelMalayalam">പേര് (മലയാളം) <span class="optional">(optional)</span></label>
+          <input type="text" id="nameMalayalam" placeholder="ഉദാ: രാജേഷ് കുമാർ">
         </div>
         <div class="form-group">
-          <label for="nameEnglish">Name (English) *</label>
-          <input type="text" id="nameEnglish" placeholder="e.g: Rajesh Kumar" required>
+          <label for="nameEnglish" id="labelEnglish">Name (English) <span class="optional">(optional)</span></label>
+          <input type="text" id="nameEnglish" placeholder="e.g: Rajesh Kumar">
         </div>
       </div>
 
+      <!-- Family Count (only for family) -->
+      <div class="form-group" id="countGroup" style="display:none;">
+        <label for="familyCount">എത്ര ആൾക്കാർ വരും? <span class="required">*</span></label>
+        <div class="count-input-wrap">
+          <button type="button" class="count-btn" id="decreaseBtn">−</button>
+          <input type="number" id="familyCount" min="1" value="1">
+          <button type="button" class="count-btn" id="increaseBtn">+</button>
+        </div>
+      </div>
+
+      <!-- Phone + Relation -->
       <div class="form-row">
         <div class="form-group">
-          <label for="phone">ഫോൺ നമ്പർ</label>
+          <label for="phone">ഫോൺ നമ്പർ <span class="optional">(optional)</span></label>
           <input type="tel" id="phone" placeholder="+91 9876543210">
         </div>
         <div class="form-group">
-          <label for="relation">ബന്ധം</label>
+          <label for="relation">ബന്ധം <span class="optional">(optional)</span></label>
           <select id="relation">
             <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
             <option value="ബന്ധു">ബന്ധു</option>
@@ -468,6 +632,7 @@ tbody tr:hover {
         </div>
       </div>
 
+      <!-- Invited + Attendance -->
       <div class="form-row">
         <div class="form-group">
           <label>ക്ഷണം നൽകിയിട്ടുണ്ടോ?</label>
@@ -497,7 +662,7 @@ tbody tr:hover {
       </div>
 
       <div class="form-group">
-        <label for="notes">കുറിപ്പുകൾ</label>
+        <label for="notes">കുറിപ്പുകൾ <span class="optional">(optional)</span></label>
         <textarea id="notes" rows="2" placeholder="അധിക വിവരങ്ങൾ..."></textarea>
       </div>
 
@@ -508,13 +673,16 @@ tbody tr:hover {
     </form>
   </section>
 
+  <!-- List -->
   <section class="list-section">
     <div class="list-header">
-      <h2>📋 വിവരങ്ങൾ</h2>
+      <h2>📋 വിവരങ്ങൾ <span id="countBadge" style="color:var(--text-light);font-size:0.9rem;font-weight:400;"></span></h2>
       <div class="list-controls">
         <input type="text" id="searchInput" placeholder="🔍 തിരയുക...">
         <select id="filterSelect">
           <option value="all">എല്ലാം</option>
+          <option value="individual">👤 വ്യക്തികൾ മാത്രം</option>
+          <option value="family">🏠 കുടുംബങ്ങൾ മാത്രം</option>
           <option value="വിളിച്ചു">വിളിച്ചവർ</option>
           <option value="വിളിച്ചിട്ടില്ല">വിളിച്ചിട്ടില്ലാത്തവർ</option>
           <option value="വരും">വരുന്നവർ</option>
@@ -531,8 +699,10 @@ tbody tr:hover {
         <thead>
           <tr>
             <th>#</th>
+            <th>Type</th>
             <th>പേര് (മലയാളം)</th>
             <th>Name (English)</th>
+            <th>ആൾക്കാർ</th>
             <th>ഫോൺ</th>
             <th>ബന്ധം</th>
             <th>ക്ഷണം</th>
@@ -555,17 +725,23 @@ tbody tr:hover {
 // ==================== State ====================
 let guests = [];
 let editMode = false;
+let currentType = 'individual';
 
 const STORAGE_KEY = 'weddingGuests';
 
 // ==================== DOM ====================
 const form = document.getElementById('guestForm');
 const editIdInput = document.getElementById('editId');
+const entryTypeInput = document.getElementById('entryType');
 const nameMalayalam = document.getElementById('nameMalayalam');
 const nameEnglish = document.getElementById('nameEnglish');
 const phone = document.getElementById('phone');
 const relation = document.getElementById('relation');
 const notes = document.getElementById('notes');
+const familyCount = document.getElementById('familyCount');
+const countGroup = document.getElementById('countGroup');
+const labelMalayalam = document.getElementById('labelMalayalam');
+const labelEnglish = document.getElementById('labelEnglish');
 const formTitle = document.getElementById('formTitle');
 const submitBtn = document.getElementById('submitBtn');
 const cancelBtn = document.getElementById('cancelBtn');
@@ -575,6 +751,8 @@ const searchInput = document.getElementById('searchInput');
 const filterSelect = document.getElementById('filterSelect');
 const exportBtn = document.getElementById('exportBtn');
 const clearAllBtn = document.getElementById('clearAllBtn');
+const countBadge = document.getElementById('countBadge');
+const typeToggle = document.getElementById('typeToggle');
 
 // ==================== Init ====================
 document.addEventListener('DOMContentLoaded', () => {
@@ -591,6 +769,55 @@ function attachListeners() {
   exportBtn.addEventListener('click', exportCSV);
   clearAllBtn.addEventListener('click', clearAll);
   guestTableBody.addEventListener('click', handleTableClick);
+
+  // Type toggle
+  typeToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('.type-btn');
+    if (!btn) return;
+    switchType(btn.dataset.type);
+  });
+
+  // Family count +/-
+  document.getElementById('increaseBtn').addEventListener('click', () => {
+    const val = parseInt(familyCount.value) || 1;
+    familyCount.value = val + 1;
+  });
+
+  document.getElementById('decreaseBtn').addEventListener('click', () => {
+    const val = parseInt(familyCount.value) || 1;
+    if (val > 1) familyCount.value = val - 1;
+  });
+
+  familyCount.addEventListener('input', () => {
+    if (parseInt(familyCount.value) < 1) familyCount.value = 1;
+  });
+}
+
+// ==================== Type Switch ====================
+function switchType(type) {
+  currentType = type;
+  entryTypeInput.value = type;
+
+  // Update buttons
+  document.querySelectorAll('.type-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.type === type);
+  });
+
+  // Show/hide count
+  countGroup.style.display = type === 'family' ? 'flex' : 'none';
+
+  // Update labels
+  if (type === 'family') {
+    labelMalayalam.innerHTML = 'കുടുംബത്തിന്റെ പേര് (മലയാളം) <span class="optional">(optional)</span>';
+    labelEnglish.innerHTML = 'Family Name (English) <span class="optional">(optional)</span>';
+    nameMalayalam.placeholder = 'ഉദാ: രാജേഷ് കുടുംബം';
+    nameEnglish.placeholder = 'e.g: Rajesh Family';
+  } else {
+    labelMalayalam.innerHTML = 'പേര് (മലയാളം) <span class="optional">(optional)</span>';
+    labelEnglish.innerHTML = 'Name (English) <span class="optional">(optional)</span>';
+    nameMalayalam.placeholder = 'ഉദാ: രാജേഷ് കുമാർ';
+    nameEnglish.placeholder = 'e.g: Rajesh Kumar';
+  }
 }
 
 // ==================== Storage ====================
@@ -615,17 +842,20 @@ function handleSubmit(e) {
   const attendance = document.querySelector('input[name="attendance"]:checked').value;
 
   const guestData = {
+    type: currentType,
     nameMalayalam: nameMalayalam.value.trim(),
     nameEnglish: nameEnglish.value.trim(),
     phone: phone.value.trim(),
     relation: relation.value,
     invited: invited,
     attendance: attendance,
-    notes: notes.value.trim()
+    notes: notes.value.trim(),
+    count: currentType === 'family' ? Math.max(1, parseInt(familyCount.value) || 1) : 1
   };
 
-  if (!guestData.nameMalayalam || !guestData.nameEnglish) {
-    showToast('പേര് നിർബന്ധമാണ്!', 'error');
+  // കുറഞ്ഞത് ഒരു പേരെങ്കിലും വേണം
+  if (!guestData.nameMalayalam && !guestData.nameEnglish) {
+    showToast('കുറഞ്ഞത് ഒരു പേരെങ്കിലും എഴുതണം!', 'error');
     return;
   }
 
@@ -645,10 +875,15 @@ function handleSubmit(e) {
   }
 
   saveToStorage();
+  resetForm();
+  render();
+}
+
+function resetForm() {
   form.reset();
+  familyCount.value = 1;
   document.querySelector('input[name="invited"][value="വിളിച്ചു"]').checked = true;
   document.querySelector('input[name="attendance"][value="വരും"]').checked = true;
-  render();
 }
 
 // ==================== Edit / Delete ====================
@@ -671,11 +906,16 @@ function startEdit(id) {
 
   editMode = true;
   editIdInput.value = guest.id;
-  nameMalayalam.value = guest.nameMalayalam;
-  nameEnglish.value = guest.nameEnglish;
+
+  // Switch type first
+  switchType(guest.type || 'individual');
+
+  nameMalayalam.value = guest.nameMalayalam || '';
+  nameEnglish.value = guest.nameEnglish || '';
   phone.value = guest.phone || '';
   relation.value = guest.relation || '';
   notes.value = guest.notes || '';
+  familyCount.value = guest.count || 1;
 
   document.querySelector(`input[name="invited"][value="${guest.invited}"]`).checked = true;
   document.querySelector(`input[name="attendance"][value="${guest.attendance}"]`).checked = true;
@@ -690,10 +930,9 @@ function startEdit(id) {
 function cancelEdit() {
   editMode = false;
   editIdInput.value = '';
-  form.reset();
-  document.querySelector('input[name="invited"][value="വിളിച്ചു"]').checked = true;
-  document.querySelector('input[name="attendance"][value="വരും"]').checked = true;
-  formTitle.textContent = '➕ പുതിയ വ്യക്തിയെ ചേർക്കുക';
+  resetForm();
+  switchType('individual');
+  formTitle.textContent = '➕ പുതിയ എൻട്രി ചേർക്കുക';
   submitBtn.textContent = '💾 സേവ് ചെയ്യുക';
   cancelBtn.style.display = 'none';
 }
@@ -701,7 +940,8 @@ function cancelEdit() {
 function deleteGuest(id) {
   const guest = guests.find(g => g.id === id);
   if (!guest) return;
-  if (!confirm(`"${guest.nameMalayalam}" നീക്കം ചെയ്യണോ?`)) return;
+  const displayName = guest.nameMalayalam || guest.nameEnglish || 'ഈ എൻട്രി';
+  if (!confirm(`"${displayName}" നീക്കം ചെയ്യണോ?`)) return;
 
   guests = guests.filter(g => g.id !== id);
   saveToStorage();
@@ -725,12 +965,14 @@ function render() {
 
   let filtered = guests.filter(g => {
     const matchSearch =
-      g.nameMalayalam.toLowerCase().includes(search) ||
-      g.nameEnglish.toLowerCase().includes(search) ||
+      (g.nameMalayalam || '').toLowerCase().includes(search) ||
+      (g.nameEnglish || '').toLowerCase().includes(search) ||
       (g.phone || '').toLowerCase().includes(search);
 
     let matchFilter = true;
-    if (filter !== 'all') {
+    if (filter === 'individual' || filter === 'family') {
+      matchFilter = g.type === filter;
+    } else if (filter !== 'all') {
       matchFilter = g.invited === filter || g.attendance === filter;
     }
 
@@ -744,11 +986,24 @@ function render() {
   } else {
     emptyState.classList.add('hidden');
     filtered.forEach((g, idx) => {
+      const isFamily = g.type === 'family';
       const tr = document.createElement('tr');
+      if (isFamily) tr.classList.add('family-row');
+
+      const countDisplay = isFamily
+        ? `<span class="count-badge">👥 ${g.count || 1}</span>`
+        : '1';
+
       tr.innerHTML = `
         <td>${idx + 1}</td>
-        <td><strong>${escapeHtml(g.nameMalayalam)}</strong></td>
-        <td>${escapeHtml(g.nameEnglish)}</td>
+        <td>
+          <span class="type-badge ${isFamily ? 'type-family' : 'type-individual'}">
+            ${isFamily ? '🏠 കുടുംബം' : '👤 വ്യക്തി'}
+          </span>
+        </td>
+        <td><strong>${escapeHtml(g.nameMalayalam || '-')}</strong></td>
+        <td>${escapeHtml(g.nameEnglish || '-')}</td>
+        <td>${countDisplay}</td>
         <td>${escapeHtml(g.phone || '-')}</td>
         <td>${escapeHtml(g.relation || '-')}</td>
         <td>${invitedBadge(g.invited)}</td>
@@ -763,6 +1018,7 @@ function render() {
     });
   }
 
+  countBadge.textContent = `(${filtered.length}/${guests.length})`;
   updateStats();
 }
 
@@ -778,10 +1034,20 @@ function attendanceBadge(val) {
 }
 
 function updateStats() {
-  document.getElementById('statTotal').textContent = guests.length;
-  document.getElementById('statCalled').textContent = guests.filter(g => g.invited === 'വിളിച്ചു').length;
-  document.getElementById('statComing').textContent = guests.filter(g => g.attendance === 'വരും').length;
-  document.getElementById('statNotComing').textContent = guests.filter(g => g.attendance === 'വരില്ല').length;
+  const totalEntries = guests.length;
+  const totalPeople = guests.reduce((sum, g) => sum + (g.count || 1), 0);
+  const families = guests.filter(g => g.type === 'family').length;
+  const called = guests.filter(g => g.invited === 'വിളിച്ചു').length;
+  const comingEntries = guests.filter(g => g.attendance === 'വരും');
+  const comingPeople = comingEntries.reduce((sum, g) => sum + (g.count || 1), 0);
+  const notComing = guests.filter(g => g.attendance === 'വരില്ല').length;
+
+  document.getElementById('statTotal').textContent = totalEntries;
+  document.getElementById('statPeople').textContent = totalPeople;
+  document.getElementById('statFamilies').textContent = families;
+  document.getElementById('statCalled').textContent = called;
+  document.getElementById('statComing').textContent = comingPeople;
+  document.getElementById('statNotComing').textContent = notComing;
 }
 
 // ==================== Export CSV ====================
@@ -791,10 +1057,12 @@ function exportCSV() {
     return;
   }
 
-  const headers = ['പേര് (മലയാളം)', 'Name (English)', 'ഫോൺ', 'ബന്ധം', 'ക്ഷണം', 'വരുമോ', 'കുറിപ്പ്'];
+  const headers = ['Type', 'പേര് (മലയാളം)', 'Name (English)', 'ആൾക്കാർ', 'ഫോൺ', 'ബന്ധം', 'ക്ഷണം', 'വരുമോ', 'കുറിപ്പ്'];
   const rows = guests.map(g => [
-    g.nameMalayalam,
-    g.nameEnglish,
+    g.type === 'family' ? 'കുടുംബം' : 'വ്യക്തി',
+    g.nameMalayalam || '',
+    g.nameEnglish || '',
+    g.count || 1,
     g.phone || '',
     g.relation || '',
     g.invited,
@@ -838,4 +1106,4 @@ function showToast(msg, type = 'success') {
 }
 </script>
 </body>
-                </html>
+</html>

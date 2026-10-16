@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💍 വിവാഹ ക്ഷണ ട്രാക്കർ</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Noto Sans Malayalam', Tahoma, sans-serif;
+}
+
+:root {
+  --primary: #d6336c;
+  --primary-dark: #a61e4d;
+  --secondary: #f8f9fa;
+  --success: #2f9e44;
+  --danger: #e03131;
+  --warning: #f08c00;
+  --info: #1971c2;
+  --border: #e0e0e0;
+  --text: #212529;
+  --text-light: #6c757d;
+  --shadow: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+
+body {
+  background: linear-gradient(135deg, #fff0f6 0%, #f3f0ff 100%);
+  min-height: 100vh;
+  color: var(--text);
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #d6336c, #7048e8);
+  color: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  opacity: 0.9;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 5px solid var(--info);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-card.total { border-color: var(--info); }
+.stat-card.called { border-color: var(--warning); }
+.stat-card.coming { border-color: var(--success); }
+.stat-card.not-coming { border-color: var(--danger); }
+
+.stat-icon { font-size: 2rem; }
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.form-section, .list-section {
+  background: #fff;
+  padding: 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+.form-section h2, .list-section h2 {
+  margin-bottom: 18px;
+  color: var(--primary-dark);
+  font-size: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group select,
+.form-group textarea {
+  padding: 11px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(214,51,108,0.1);
+}
+
+.radio-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--secondary);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.radio-label:hover {
+  background: #e9ecef;
+}
+
+.radio-label:has(input:checked) {
+  background: #ffe3ec;
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.radio-label.coming:has(input:checked) {
+  background: #d3f9d8;
+  border-color: var(--success);
+  color: #2b8a3e;
+}
+
+.radio-label.not-coming:has(input:checked) {
+  background: #ffe3e3;
+  border-color: var(--danger);
+  color: #c92a2a;
+}
+
+.radio-label.maybe:has(input:checked) {
+  background: #fff3bf;
+  border-color: var(--warning);
+  color: #e67700;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #7048e8);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(214,51,108,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 14px rgba(214,51,108,0.4);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--text);
+  border: 2px solid var(--border);
+}
+
+.btn-export {
+  background: var(--info);
+  color: #fff;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.list-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.list-controls input,
+.list-controls select {
+  padding: 9px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.list-controls input:focus,
+.list-controls select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.list-controls .btn {
+  padding: 9px 14px;
+  font-size: 0.85rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+thead {
+  background: linear-gradient(135deg, #f8f0ff, #ffe3ec);
+}
+
+th {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--primary-dark);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+td {
+  padding: 12px 10px;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background 0.15s;
+}
+
+tbody tr:hover {
+  background: #fdf6ff;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-called { background: #fff3bf; color: #e67700; }
+.badge-not-called { background: #e9ecef; color: #495057; }
+.badge-coming { background: #d3f9d8; color: #2b8a3e; }
+.badge-not-coming { background: #ffe3e3; color: #c92a2a; }
+.badge-maybe { background: #e7f5ff; color: #1971c2; }
+
+.action-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 4px;
+  transition: transform 0.15s;
+}
+
+.action-btn:hover { transform: scale(1.1); }
+.edit-btn { background: #e7f5ff; color: var(--info); }
+.delete-btn { background: #ffe3e3; color: var(--danger); }
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.empty-state.hidden { display: none; }
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--success);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  font-weight: 600;
+  transform: translateX(400px);
+  transition: transform 0.3s;
+  z-index: 999;
+}
+
+.toast.show { transform: translateX(0); }
+.toast.error { background: var(--danger); }
+.toast.info { background: var(--info); }
+
+@media (max-width: 768px) {
+  .form-row { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.4rem; }
+  .list-header { flex-direction: column; align-items: stretch; }
+  .list-controls { flex-direction: column; }
+  .list-controls input,
+  .list-controls select,
+  .list-controls .btn { width: 100%; }
+  .stat-card { padding: 14px; }
+  .stat-value { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="header">
+    <h1>💍 വിവാഹ ക്ഷണ ട്രാക്കർ</h1>
+    <p class="subtitle">Wedding Invitation Tracker</p>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <span class="stat-icon">👥</span>
+      <div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">മൊത്തം ആളുകൾ</div>
+      </div>
+    </div>
+    <div class="stat-card called">
+      <span class="stat-icon">📞</span>
+      <div>
+        <div class="stat-value" id="statCalled">0</div>
+        <div class="stat-label">വിളിച്ചവർ</div>
+      </div>
+    </div>
+    <div class="stat-card coming">
+      <span class="stat-icon">✅</span>
+      <div>
+        <div class="stat-value" id="statComing">0</div>
+        <div class="stat-label">വരുന്നവർ</div>
+      </div>
+    </div>
+    <div class="stat-card not-coming">
+      <span class="stat-icon">❌</span>
+      <div>
+        <div class="stat-value" id="statNotComing">0</div>
+        <div class="stat-label">വരാത്തവർ</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="form-section">
+    <h2 id="formTitle">➕ പുതിയ വ്യക്തിയെ ചേർക്കുക</h2>
+    <form id="guestForm">
+      <input type="hidden" id="editId">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nameMalayalam">പേര് (മലയാളം) *</label>
+          <input type="text" id="nameMalayalam" placeholder="ഉദാ: രാജേഷ് കുമാർ" required>
+        </div>
+        <div class="form-group">
+          <label for="nameEnglish">Name (English) *</label>
+          <input type="text" id="nameEnglish" placeholder="e.g: Rajesh Kumar" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">ഫോൺ നമ്പർ</label>
+          <input type="tel" id="phone" placeholder="+91 9876543210">
+        </div>
+        <div class="form-group">
+          <label for="relation">ബന്ധം</label>
+          <select id="relation">
+            <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
+            <option value="ബന്ധു">ബന്ധു</option>
+            <option value="സുഹൃത്ത്">സുഹൃത്ത്</option>
+            <option value="സഹപ്രവർത്തകൻ">സഹപ്രവർത്തകൻ</option>
+            <option value="അയൽക്കാരൻ">അയൽക്കാരൻ</option>
+            <option value="കുടുംബം">കുടുംബം</option>
+            <option value="മറ്റുള്ളവ">മറ്റുള്ളവ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>ക്ഷണം നൽകിയിട്ടുണ്ടോ?</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="invited" value="വിളിച്ചു" checked> വിളിച്ചു
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="invited" value="വിളിച്ചിട്ടില്ല"> വിളിച്ചിട്ടില്ല
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>വരുമോ?</label>
+          <div class="radio-group">
+            <label class="radio-label coming">
+              <input type="radio" name="attendance" value="വരും" checked> വരും
+            </label>
+            <label class="radio-label not-coming">
+              <input type="radio" name="attendance" value="വരില്ല"> വരില്ല
+            </label>
+            <label class="radio-label maybe">
+              <input type="radio" name="attendance" value="സംശയം"> സംശയം
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">കുറിപ്പുകൾ</label>
+        <textarea id="notes" rows="2" placeholder="അധിക വിവരങ്ങൾ..."></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="submitBtn">💾 സേവ് ചെയ്യുക</button>
+        <button type="button" class="btn btn-secondary" id="cancelBtn" style="display:none;">❌ റദ്ദാക്കുക</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="list-section">
+    <div class="list-header">
+      <h2>📋 വിവരങ്ങൾ</h2>
+      <div class="list-controls">
+        <input type="text" id="searchInput" placeholder="🔍 തിരയുക...">
+        <select id="filterSelect">
+          <option value="all">എല്ലാം</option>
+          <option value="വിളിച്ചു">വിളിച്ചവർ</option>
+          <option value="വിളിച്ചിട്ടില്ല">വിളിച്ചിട്ടില്ലാത്തവർ</option>
+          <option value="വരും">വരുന്നവർ</option>
+          <option value="വരില്ല">വരാത്തവർ</option>
+          <option value="സംശയം">സംശയം</option>
+        </select>
+        <button class="btn btn-export" id="exportBtn">⬇️ CSV</button>
+        <button class="btn btn-danger" id="clearAllBtn">🗑️ എല്ലാം മായ്ക്കുക</button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="guestTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>പേര് (മലയാളം)</th>
+            <th>Name (English)</th>
+            <th>ഫോൺ</th>
+            <th>ബന്ധം</th>
+            <th>ക്ഷണം</th>
+            <th>വരുമോ?</th>
+            <th>കുറിപ്പ്</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="guestTableBody"></tbody>
+      </table>
+      <div id="emptyState" class="empty-state">
+        <p>📭 ഇതുവരെ ആരെയും ചേർത്തിട്ടില്ല</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ==================== State ====================
+let guests = [];
+let editMode = false;
+
+const STORAGE_KEY = 'weddingGuests';
+
+// ==================== DOM ====================
+const form = document.getElementById('guestForm');
+const editIdInput = document.getElementById('editId');
+const nameMalayalam = document.getElementById('nameMalayalam');
+const nameEnglish = document.getElementById('nameEnglish');
+const phone = document.getElementById('phone');
+const relation = document.getElementById('relation');
+const notes = document.getElementById('notes');
+const formTitle = document.getElementById('formTitle');
+const submitBtn = document.getElementById('submitBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const guestTableBody = document.getElementById('guestTableBody');
+const emptyState = document.getElementById('emptyState');
+const searchInput = document.getElementById('searchInput');
+const filterSelect = document.getElementById('filterSelect');
+const exportBtn = document.getElementById('exportBtn');
+const clearAllBtn = document.getElementById('clearAllBtn');
+
+// ==================== Init ====================
+document.addEventListener('DOMContentLoaded', () => {
+  loadFromStorage();
+  render();
+  attachListeners();
+});
+
+function attachListeners() {
+  form.addEventListener('submit', handleSubmit);
+  cancelBtn.addEventListener('click', cancelEdit);
+  searchInput.addEventListener('input', render);
+  filterSelect.addEventListener('change', render);
+  exportBtn.addEventListener('click', exportCSV);
+  clearAllBtn.addEventListener('click', clearAll);
+  guestTableBody.addEventListener('click', handleTableClick);
+}
+
+// ==================== Storage ====================
+function loadFromStorage() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    guests = data ? JSON.parse(data) : [];
+  } catch (e) {
+    guests = [];
+  }
+}
+
+function saveToStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+}
+
+// ==================== Form Submit ====================
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const invited = document.querySelector('input[name="invited"]:checked').value;
+  const attendance = document.querySelector('input[name="attendance"]:checked').value;
+
+  const guestData = {
+    nameMalayalam: nameMalayalam.value.trim(),
+    nameEnglish: nameEnglish.value.trim(),
+    phone: phone.value.trim(),
+    relation: relation.value,
+    invited: invited,
+    attendance: attendance,
+    notes: notes.value.trim()
+  };
+
+  if (!guestData.nameMalayalam || !guestData.nameEnglish) {
+    showToast('പേര് നിർബന്ധമാണ്!', 'error');
+    return;
+  }
+
+  if (editMode) {
+    const id = Number(editIdInput.value);
+    const index = guests.findIndex(g => g.id === id);
+    if (index !== -1) {
+      guests[index] = { ...guests[index], ...guestData };
+    }
+    showToast('✏️ അപ്ഡേറ്റ് ചെയ്തു!');
+    cancelEdit();
+  } else {
+    guestData.id = Date.now();
+    guestData.createdAt = new Date().toISOString();
+    guests.unshift(guestData);
+    showToast('✅ ചേർത്തു!');
+  }
+
+  saveToStorage();
+  form.reset();
+  document.querySelector('input[name="invited"][value="വിളിച്ചു"]').checked = true;
+  document.querySelector('input[name="attendance"][value="വരും"]').checked = true;
+  render();
+}
+
+// ==================== Edit / Delete ====================
+function handleTableClick(e) {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+
+  const id = Number(btn.dataset.id);
+
+  if (btn.classList.contains('edit-btn')) {
+    startEdit(id);
+  } else if (btn.classList.contains('delete-btn')) {
+    deleteGuest(id);
+  }
+}
+
+function startEdit(id) {
+  const guest = guests.find(g => g.id === id);
+  if (!guest) return;
+
+  editMode = true;
+  editIdInput.value = guest.id;
+  nameMalayalam.value = guest.nameMalayalam;
+  nameEnglish.value = guest.nameEnglish;
+  phone.value = guest.phone || '';
+  relation.value = guest.relation || '';
+  notes.value = guest.notes || '';
+
+  document.querySelector(`input[name="invited"][value="${guest.invited}"]`).checked = true;
+  document.querySelector(`input[name="attendance"][value="${guest.attendance}"]`).checked = true;
+
+  formTitle.textContent = '✏️ വിവരങ്ങൾ തിരുത്തുക';
+  submitBtn.textContent = '💾 അപ്ഡേറ്റ് ചെയ്യുക';
+  cancelBtn.style.display = 'inline-block';
+
+  window.scrollTo({ top: form.offsetTop - 20, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+  editMode = false;
+  editIdInput.value = '';
+  form.reset();
+  document.querySelector('input[name="invited"][value="വിളിച്ചു"]').checked = true;
+  document.querySelector('input[name="attendance"][value="വരും"]').checked = true;
+  formTitle.textContent = '➕ പുതിയ വ്യക്തിയെ ചേർക്കുക';
+  submitBtn.textContent = '💾 സേവ് ചെയ്യുക';
+  cancelBtn.style.display = 'none';
+}
+
+function deleteGuest(id) {
+  const guest = guests.find(g => g.id === id);
+  if (!guest) return;
+  if (!confirm(`"${guest.nameMalayalam}" നീക്കം ചെയ്യണോ?`)) return;
+
+  guests = guests.filter(g => g.id !== id);
+  saveToStorage();
+  render();
+  showToast('🗑️ നീക്കം ചെയ്തു', 'info');
+}
+
+function clearAll() {
+  if (guests.length === 0) return;
+  if (!confirm('എല്ലാ വിവരങ്ങളും മായ്ക്കണോ? ഇത് തിരികെ ലഭിക്കില്ല!')) return;
+  guests = [];
+  saveToStorage();
+  render();
+  showToast('🗑️ എല്ലാം മായ്ച്ചു', 'info');
+}
+
+// ==================== Render ====================
+function render() {
+  const search = searchInput.value.trim().toLowerCase();
+  const filter = filterSelect.value;
+
+  let filtered = guests.filter(g => {
+    const matchSearch =
+      g.nameMalayalam.toLowerCase().includes(search) ||
+      g.nameEnglish.toLowerCase().includes(search) ||
+      (g.phone || '').toLowerCase().includes(search);
+
+    let matchFilter = true;
+    if (filter !== 'all') {
+      matchFilter = g.invited === filter || g.attendance === filter;
+    }
+
+    return matchSearch && matchFilter;
+  });
+
+  guestTableBody.innerHTML = '';
+
+  if (filtered.length === 0) {
+    emptyState.classList.remove('hidden');
+  } else {
+    emptyState.classList.add('hidden');
+    filtered.forEach((g, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td><strong>${escapeHtml(g.nameMalayalam)}</strong></td>
+        <td>${escapeHtml(g.nameEnglish)}</td>
+        <td>${escapeHtml(g.phone || '-')}</td>
+        <td>${escapeHtml(g.relation || '-')}</td>
+        <td>${invitedBadge(g.invited)}</td>
+        <td>${attendanceBadge(g.attendance)}</td>
+        <td>${escapeHtml(g.notes || '-')}</td>
+        <td>
+          <button class="action-btn edit-btn" data-id="${g.id}">✏️</button>
+          <button class="action-btn delete-btn" data-id="${g.id}">🗑️</button>
+        </td>
+      `;
+      guestTableBody.appendChild(tr);
+    });
+  }
+
+  updateStats();
+}
+
+function invitedBadge(val) {
+  if (val === 'വിളിച്ചു') return '<span class="badge badge-called">📞 വിളിച്ചു</span>';
+  return '<span class="badge badge-not-called">⏳ വിളിച്ചിട്ടില്ല</span>';
+}
+
+function attendanceBadge(val) {
+  if (val === 'വരും') return '<span class="badge badge-coming">✅ വരും</span>';
+  if (val === 'വരില്ല') return '<span class="badge badge-not-coming">❌ വരില്ല</span>';
+  return '<span class="badge badge-maybe">🤔 സംശയം</span>';
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = guests.length;
+  document.getElementById('statCalled').textContent = guests.filter(g => g.invited === 'വിളിച്ചു').length;
+  document.getElementById('statComing').textContent = guests.filter(g => g.attendance === 'വരും').length;
+  document.getElementById('statNotComing').textContent = guests.filter(g => g.attendance === 'വരില്ല').length;
+}
+
+// ==================== Export CSV ====================
+function exportCSV() {
+  if (guests.length === 0) {
+    showToast('ഡാറ്റ ഇല്ല!', 'error');
+    return;
+  }
+
+  const headers = ['പേര് (മലയാളം)', 'Name (English)', 'ഫോൺ', 'ബന്ധം', 'ക്ഷണം', 'വരുമോ', 'കുറിപ്പ്'];
+  const rows = guests.map(g => [
+    g.nameMalayalam,
+    g.nameEnglish,
+    g.phone || '',
+    g.relation || '',
+    g.invited,
+    g.attendance,
+    g.notes || ''
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `wedding_guests_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬇️ CSV ഡൗൺലോഡ് ചെയ്തു');
+}
+
+// ==================== Helpers ====================
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg, type = 'success') {
+  let toast = document.querySelector('.toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.className = 'toast ' + type;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+</script>
+</body>
+                </html>

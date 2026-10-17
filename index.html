@@ -4,343 +4,322 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💍 വിവാഹ ക്ഷണ ട്രാക്കർ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', 'Noto Sans Malayalam', Tahoma, sans-serif;
+  font-family: 'Poppins', 'Noto Sans Malayalam', 'Segoe UI', Tahoma, sans-serif;
 }
 
 :root {
   --primary: #d6336c;
   --primary-dark: #a61e4d;
-  --secondary: #f8f9fa;
-  --success: #2f9e44;
-  --danger: #e03131;
-  --warning: #f08c00;
-  --info: #1971c2;
+  --primary-light: #ffe3ec;
   --purple: #7048e8;
-  --border: #e0e0e0;
-  --text: #212529;
-  --text-light: #6c757d;
-  --shadow: 0 4px 12px rgba(0,0,0,0.08);
-  --radius: 12px;
+  --purple-light: #f3f0ff;
+  --success: #2f9e44;
+  --success-light: #d3f9d8;
+  --danger: #e03131;
+  --danger-light: #ffe3e3;
+  --warning: #f08c00;
+  --warning-light: #fff3bf;
+  --info: #1971c2;
+  --info-light: #e7f5ff;
+
+  --bg: #fef6f9;
+  --bg-gradient: linear-gradient(135deg, #fff0f6 0%, #f3f0ff 100%);
+  --surface: #ffffff;
+  --surface-alt: #f8f5fb;
+  --border: #ecdce5;
+  --text: #22232b;
+  --text-light: #767385;
+  --shadow-sm: 0 2px 8px rgba(96, 32, 70, 0.06);
+  --shadow: 0 10px 30px rgba(96, 32, 70, 0.1);
+  --shadow-lg: 0 20px 50px rgba(96, 32, 70, 0.18);
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+}
+
+:root[data-theme="dark"] {
+  --bg: #15121b;
+  --bg-gradient: linear-gradient(135deg, #1b1522 0%, #241a2e 100%);
+  --surface: #211b2a;
+  --surface-alt: #2a2234;
+  --border: #392f46;
+  --text: #f1edf7;
+  --text-light: #a79fb8;
+  --primary-light: #452233;
+  --purple-light: #2c2447;
+  --success-light: #173322;
+  --danger-light: #3a1f23;
+  --warning-light: #3a2e16;
+  --info-light: #182a3a;
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.3);
+  --shadow: 0 10px 30px rgba(0,0,0,0.4);
+  --shadow-lg: 0 25px 60px rgba(0,0,0,0.55);
 }
 
 body {
-  background: linear-gradient(135deg, #fff0f6 0%, #f3f0ff 100%);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
   min-height: 100vh;
   color: var(--text);
-  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+  padding-bottom: 40px;
 }
 
 .container {
   max-width: 1250px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
-.header {
-  text-align: center;
-  padding: 30px 20px;
-  background: linear-gradient(135deg, #d6336c, #7048e8);
-  color: #fff;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
-}
-
-.header h1 {
-  font-size: 2rem;
-  margin-bottom: 6px;
-}
-
-.subtitle {
-  opacity: 0.9;
-  font-size: 0.95rem;
-  letter-spacing: 2px;
-}
-
-/* Connection Status */
-.conn-status {
+/* ==================== Topbar ==================== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin: 0 auto 15px;
-  width: fit-content;
-  background: #fff;
-  box-shadow: var(--shadow);
-}
-
-.conn-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #adb5bd;
-}
-
-.conn-dot.online { background: var(--success); animation: pulse 2s infinite; }
-.conn-dot.offline { background: var(--danger); }
-.conn-dot.loading { background: var(--warning); animation: pulse 1s infinite; }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-/* Stats */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  margin-bottom: 25px;
-}
-
-.stat-card {
-  background: #fff;
-  padding: 16px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-left: 5px solid var(--info);
-  transition: transform 0.2s;
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-}
-
-.stat-card.total { border-color: var(--info); }
-.stat-card.called { border-color: var(--warning); }
-.stat-card.coming { border-color: var(--success); }
-.stat-card.not-coming { border-color: var(--danger); }
-.stat-card.people { border-color: var(--purple); }
-.stat-card.families { border-color: var(--primary); }
-
-.stat-icon { font-size: 1.8rem; }
-
-.stat-value {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-light);
-}
-
-/* Form */
-.form-section, .list-section {
-  background: #fff;
-  padding: 25px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  margin-bottom: 25px;
-}
-
-.form-section h2, .list-section h2 {
-  margin-bottom: 18px;
-  color: var(--primary-dark);
-  font-size: 1.25rem;
-}
-
-/* Entry Type Toggle */
-.type-toggle {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  background: var(--secondary);
-  padding: 6px;
-  border-radius: 12px;
-  width: fit-content;
-}
-
-.type-btn {
-  padding: 10px 24px;
-  border: none;
-  background: transparent;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  color: var(--text-light);
-}
-
-.type-btn.active {
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
   background: linear-gradient(135deg, var(--primary), var(--purple));
   color: #fff;
-  box-shadow: 0 4px 10px rgba(214,51,108,0.3);
+  box-shadow: var(--shadow);
 }
 
-.type-btn:not(.active):hover {
-  background: #e9ecef;
-  color: var(--text);
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
-.form-group label .optional {
-  color: var(--text-light);
-  font-weight: 400;
-  font-size: 0.8rem;
-}
-
-.form-group label .required {
-  color: var(--danger);
-}
-
-.form-group input[type="text"],
-.form-group input[type="tel"],
-.form-group input[type="number"],
-.form-group select,
-.form-group textarea {
-  padding: 11px 14px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(214,51,108,0.1);
-}
-
-/* Count input with +/- */
-.count-input-wrap {
+.brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.count-input-wrap input {
-  flex: 1;
-  text-align: center;
-  font-weight: 700;
-  font-size: 1.1rem !important;
+.brand .ring {
+  font-size: 1.5rem;
 }
 
-.count-btn {
-  width: 44px;
-  height: 44px;
-  border: 2px solid var(--border);
-  background: #fff;
-  border-radius: 8px;
-  font-size: 1.3rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--primary);
-  font-family: inherit;
+.brand .sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  opacity: 0.85;
+  letter-spacing: 1px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex-shrink: 0;
 }
 
-.count-btn:hover {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
-  transform: scale(1.05);
-}
-
-.count-btn:active {
-  transform: scale(0.95);
-}
-
-.radio-group {
+.conn-pill {
   display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+.conn-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e9ecef;
+  flex-shrink: 0;
+}
+
+.conn-dot.online { background: #69db7c; animation: pulse 2s infinite; }
+.conn-dot.offline { background: #ff8787; }
+.conn-dot.loading { background: #ffd43b; animation: pulse 1s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+  50% { opacity: 0.5; }
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.32);
+  transform: scale(1.08);
+}
+
+/* ==================== Stats ==================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.stat-card {
+  position: relative;
+  background: var(--surface);
+  padding: 18px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid var(--border);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background: var(--accent, var(--info));
+}
+
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  background: var(--accent-light, var(--info-light));
+  z-index: 1;
+}
+
+.stat-card.total { --accent: var(--info); --accent-light: var(--info-light); }
+.stat-card.people { --accent: var(--purple); --accent-light: var(--purple-light); }
+.stat-card.families { --accent: var(--primary); --accent-light: var(--primary-light); }
+.stat-card.called { --accent: var(--warning); --accent-light: var(--warning-light); }
+.stat-card.coming { --accent: var(--success); --accent-light: var(--success-light); }
+.stat-card.not-coming { --accent: var(--danger); --accent-light: var(--danger-light); }
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  z-index: 1;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  z-index: 1;
+  font-weight: 500;
+}
+
+/* ==================== Toolbar ==================== */
+.toolbar {
+  display: flex;
+  align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  padding: 14px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.search-wrap .icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 11px 14px 11px 36px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.toolbar select {
+  padding: 11px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  background: var(--surface-alt);
+  color: var(--text);
+  flex: 0 0 auto;
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
   flex-wrap: wrap;
 }
 
-.radio-label {
+.btn {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  background: var(--secondary);
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  border: 2px solid transparent;
-  transition: all 0.2s;
-}
-
-.radio-label:hover {
-  background: #e9ecef;
-}
-
-.radio-label:has(input:checked) {
-  background: #ffe3ec;
-  border-color: var(--primary);
-  color: var(--primary-dark);
-  font-weight: 600;
-}
-
-.radio-label.coming:has(input:checked) {
-  background: #d3f9d8;
-  border-color: var(--success);
-  color: #2b8a3e;
-}
-
-.radio-label.not-coming:has(input:checked) {
-  background: #ffe3e3;
-  border-color: var(--danger);
-  color: #c92a2a;
-}
-
-.radio-label.maybe:has(input:checked) {
-  background: #fff3bf;
-  border-color: var(--warning);
-  color: #e67700;
-}
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.btn {
-  padding: 11px 22px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
+  white-space: nowrap;
 }
 
 .btn:hover { transform: translateY(-2px); }
@@ -348,94 +327,77 @@ body {
 .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), #7048e8);
+  background: linear-gradient(135deg, var(--primary), var(--purple));
   color: #fff;
-  box-shadow: 0 4px 10px rgba(214,51,108,0.3);
+  box-shadow: 0 4px 14px rgba(214,51,108,0.35);
 }
 
-.btn-primary:hover:not(:disabled) {
-  box-shadow: 0 6px 14px rgba(214,51,108,0.4);
-}
-
-.btn-secondary {
-  background: var(--secondary);
+.btn-ghost {
+  background: var(--surface-alt);
   color: var(--text);
   border: 2px solid var(--border);
 }
 
-.btn-export {
-  background: var(--info);
-  color: #fff;
+.btn-ghost.danger { color: var(--danger); }
+.btn-ghost.danger:hover { background: var(--danger-light); border-color: var(--danger); }
+.btn-ghost:hover { background: var(--info-light); border-color: var(--info); }
+
+/* ==================== List section ==================== */
+.list-section {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
 
-.btn-danger {
-  background: var(--danger);
-  color: #fff;
-}
-
-/* List */
-.list-header {
+.list-section-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 18px;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
 }
 
-.list-controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.list-section-header h2 {
+  font-size: 1.05rem;
+  color: var(--primary-dark);
+  font-weight: 700;
 }
 
-.list-controls input,
-.list-controls select {
-  padding: 9px 12px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
+#countBadge {
+  color: var(--text-light);
   font-size: 0.85rem;
-  font-family: inherit;
-}
-
-.list-controls input:focus,
-.list-controls select:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-.list-controls .btn {
-  padding: 9px 14px;
-  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 .table-wrapper {
   overflow-x: auto;
-  border-radius: 8px;
-  border: 1px solid var(--border);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1050px;
+  min-width: 1020px;
 }
 
 thead {
-  background: linear-gradient(135deg, #f8f0ff, #ffe3ec);
+  background: var(--surface-alt);
 }
 
 th {
-  padding: 12px 10px;
+  padding: 13px 14px;
   text-align: left;
-  font-size: 0.85rem;
-  color: var(--primary-dark);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
   font-weight: 700;
   white-space: nowrap;
 }
 
 td {
-  padding: 12px 10px;
+  padding: 13px 14px;
   border-top: 1px solid var(--border);
   font-size: 0.9rem;
   vertical-align: middle;
@@ -445,339 +407,672 @@ tbody tr {
   transition: background 0.15s;
 }
 
-tbody tr:hover {
-  background: #fdf6ff;
+tbody tr:hover { background: var(--surface-alt); }
+tbody tr.family-row { background: var(--purple-light); }
+tbody tr.family-row:hover { filter: brightness(0.97); }
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-tbody tr.family-row {
-  background: #fdf6ff;
-}
-
-tbody tr.family-row:hover {
-  background: #f8ebff;
-}
-
-.type-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.type-individual { background: #e7f5ff; color: #1971c2; }
-.type-family { background: #fff3bf; color: #e67700; }
-
-.count-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 700;
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), var(--purple));
   color: #fff;
-  white-space: nowrap;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.badge {
+.name-text strong { display: block; font-size: 0.92rem; }
+.name-text span { font-size: 0.78rem; color: var(--text-light); }
+
+.type-badge, .count-badge, .badge {
   display: inline-block;
   padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.78rem;
-  font-weight: 600;
+  border-radius: 20px;
+  font-size: 0.74rem;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.badge-called { background: #fff3bf; color: #e67700; }
-.badge-not-called { background: #e9ecef; color: #495057; }
-.badge-coming { background: #d3f9d8; color: #2b8a3e; }
-.badge-not-coming { background: #ffe3e3; color: #c92a2a; }
-.badge-maybe { background: #e7f5ff; color: #1971c2; }
+.type-individual { background: var(--info-light); color: var(--info); }
+.type-family { background: var(--warning-light); color: var(--warning); }
+
+.count-badge {
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: #fff;
+}
+
+.badge-called { background: var(--warning-light); color: var(--warning); }
+.badge-not-called { background: var(--surface-alt); color: var(--text-light); border: 1px solid var(--border); }
+.badge-coming { background: var(--success-light); color: var(--success); }
+.badge-not-coming { background: var(--danger-light); color: var(--danger); }
+.badge-maybe { background: var(--info-light); color: var(--info); }
 
 .action-btn {
-  padding: 6px 10px;
+  width: 32px;
+  height: 32px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.85rem;
   margin-right: 4px;
   transition: transform 0.15s;
 }
 
-.action-btn:hover { transform: scale(1.1); }
-.edit-btn { background: #e7f5ff; color: var(--info); }
-.delete-btn { background: #ffe3e3; color: var(--danger); }
+.action-btn:hover { transform: scale(1.12); }
+.edit-btn { background: var(--info-light); color: var(--info); }
+.delete-btn { background: var(--danger-light); color: var(--danger); }
 
+/* ==================== Mobile cards ==================== */
+.guest-cards { display: none; padding: 10px; }
+
+.guest-card {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  animation: fadeIn 0.25s ease;
+}
+
+.guest-card.family-row { background: var(--purple-light); }
+
+.guest-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.guest-card .badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.guest-card .meta-row {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  margin-bottom: 3px;
+}
+
+.guest-card .card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.guest-card .card-actions .action-btn {
+  width: auto;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* ==================== Empty / loading ==================== */
 .empty-state {
   text-align: center;
-  padding: 40px;
+  padding: 60px 20px;
   color: var(--text-light);
-  font-size: 1rem;
 }
 
+.empty-state .emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
 .empty-state.hidden { display: none; }
+.empty-state p { margin-bottom: 16px; }
 
-.loading-state {
-  text-align: center;
-  padding: 40px;
+.skeleton-row td {
+  padding: 16px 14px;
+}
+
+.skeleton-bar {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--surface-alt) 25%, var(--border) 50%, var(--surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.loading-state.hidden { display: none; }
+
+/* ==================== FAB ==================== */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: #fff;
+  font-size: 1.6rem;
+  box-shadow: 0 8px 24px rgba(214,51,108,0.45);
+  cursor: pointer;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.fab:hover { transform: scale(1.08) rotate(90deg); }
+
+/* ==================== Modal ==================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 25, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.25s;
+}
+
+.modal-overlay.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.modal-header h2 {
+  font-size: 1.15rem;
+  color: var(--primary-dark);
+}
+
+.modal-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Entry Type Toggle */
+.type-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: var(--surface-alt);
+  padding: 6px;
+  border-radius: 12px;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
   color: var(--text-light);
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f0f0f0;
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 15px;
+.type-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(214,51,108,0.3);
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.type-btn:not(.active):hover { background: var(--border); color: var(--text); }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
-.toast {
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--text);
+}
+
+.form-group label .optional { color: var(--text-light); font-weight: 400; font-size: 0.78rem; }
+.form-group label .required { color: var(--danger); }
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+  padding: 11px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.92rem;
+  transition: all 0.2s;
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(214,51,108,0.15);
+}
+
+.count-input-wrap { display: flex; align-items: center; gap: 8px; }
+
+.count-input-wrap input {
+  flex: 1;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem !important;
+}
+
+.count-btn {
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--border);
+  background: var(--surface-alt);
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.count-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); transform: scale(1.05); }
+.count-btn:active { transform: scale(0.95); }
+
+.radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--surface-alt);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.radio-label:hover { filter: brightness(0.96); }
+
+.radio-label:has(input:checked) {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.radio-label.coming:has(input:checked) { background: var(--success-light); border-color: var(--success); color: var(--success); }
+.radio-label.not-coming:has(input:checked) { background: var(--danger-light); border-color: var(--danger); color: var(--danger); }
+.radio-label.maybe:has(input:checked) { background: var(--warning-light); border-color: var(--warning); color: var(--warning); }
+
+/* ==================== Toasts ==================== */
+.toast-stack {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: var(--success);
-  color: #fff;
-  padding: 14px 22px;
-  border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-  font-weight: 600;
-  transform: translateX(400px);
-  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   z-index: 999;
   max-width: 90vw;
 }
 
-.toast.show { transform: translateX(0); }
+.toast {
+  background: var(--success);
+  color: #fff;
+  padding: 13px 20px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastIn 0.25s ease;
+}
+
+.toast.leaving { animation: toastOut 0.2s ease forwards; }
 .toast.error { background: var(--danger); }
 .toast.info { background: var(--info); }
 
+@keyframes toastIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastOut {
+  to { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 860px) {
+  .table-wrapper { display: none; }
+  .guest-cards { display: block; }
+}
+
 @media (max-width: 768px) {
+  .container { padding: 0 14px; }
+  .brand .sub { display: none; }
   .form-row { grid-template-columns: 1fr; }
-  .header h1 { font-size: 1.4rem; }
-  .list-header { flex-direction: column; align-items: stretch; }
-  .list-controls { flex-direction: column; }
-  .list-controls input,
-  .list-controls select,
-  .list-controls .btn { width: 100%; }
-  .stat-card { padding: 12px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-actions { margin-left: 0; }
+  .toolbar-actions .btn { flex: 1; justify-content: center; }
+  .toolbar-actions .btn-primary { display: none; }
+  .fab { display: flex; }
+  .stat-card { padding: 14px; }
   .stat-value { font-size: 1.3rem; }
-  .type-toggle { width: 100%; }
-  .type-btn { flex: 1; padding: 10px 12px; font-size: 0.85rem; }
-  .toast { left: 20px; right: 20px; transform: translateY(200px); }
-  .toast.show { transform: translateY(0); }
+  .toast-stack { left: 16px; right: 16px; bottom: 90px; }
+  .toast { justify-content: center; }
 }
 </style>
 </head>
 <body>
-<div class="container">
 
-  <header class="header">
-    <h1>💍 വിവാഹ ക്ഷണ ട്രാക്കർ</h1>
-    <p class="subtitle">Wedding Invitation Tracker</p>
+  <header class="topbar">
+    <div class="brand">
+      <span class="ring">💍</span>
+      <span>
+        വിവാഹ ക്ഷണ ട്രാക്കർ
+        <span class="sub">WEDDING INVITATION TRACKER</span>
+      </span>
+    </div>
+    <div class="topbar-right">
+      <span class="conn-pill">
+        <span class="conn-dot loading" id="connDot"></span>
+        <span id="connText">കണക്ട് ചെയ്യുന്നു...</span>
+      </span>
+      <button class="icon-btn" id="themeToggle" title="Toggle theme" type="button">🌙</button>
+    </div>
   </header>
 
-  <!-- Connection Status -->
-  <div class="conn-status">
-    <span class="conn-dot loading" id="connDot"></span>
-    <span id="connText">കണക്ട് ചെയ്യുന്നു...</span>
-  </div>
+  <div class="container">
 
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card total">
-      <span class="stat-icon">📋</span>
-      <div>
-        <div class="stat-value" id="statTotal">0</div>
-        <div class="stat-label">മൊത്തം എൻട്രികൾ</div>
-      </div>
-    </div>
-    <div class="stat-card people">
-      <span class="stat-icon">👥</span>
-      <div>
-        <div class="stat-value" id="statPeople">0</div>
-        <div class="stat-label">മൊത്തം ആളുകൾ</div>
-      </div>
-    </div>
-    <div class="stat-card families">
-      <span class="stat-icon">🏠</span>
-      <div>
-        <div class="stat-value" id="statFamilies">0</div>
-        <div class="stat-label">കുടുംബങ്ങൾ</div>
-      </div>
-    </div>
-    <div class="stat-card called">
-      <span class="stat-icon">📞</span>
-      <div>
-        <div class="stat-value" id="statCalled">0</div>
-        <div class="stat-label">വിളിച്ചവർ</div>
-      </div>
-    </div>
-    <div class="stat-card coming">
-      <span class="stat-icon">✅</span>
-      <div>
-        <div class="stat-value" id="statComing">0</div>
-        <div class="stat-label">വരുന്നവർ</div>
-      </div>
-    </div>
-    <div class="stat-card not-coming">
-      <span class="stat-icon">❌</span>
-      <div>
-        <div class="stat-value" id="statNotComing">0</div>
-        <div class="stat-label">വരാത്തവർ</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form -->
-  <section class="form-section">
-    <h2 id="formTitle">➕ പുതിയ എൻട്രി ചേർക്കുക</h2>
-
-    <div class="type-toggle" id="typeToggle">
-      <button type="button" class="type-btn active" data-type="individual">👤 വ്യക്തി (Individual)</button>
-      <button type="button" class="type-btn" data-type="family">🏠 കുടുംബം (Family)</button>
-    </div>
-
-    <form id="guestForm">
-      <input type="hidden" id="editId">
-      <input type="hidden" id="entryType" value="individual">
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nameMalayalam" id="labelMalayalam">പേര് (മലയാളം) <span class="optional">(optional)</span></label>
-          <input type="text" id="nameMalayalam" placeholder="ഉദാ: രാജേഷ് കുമാർ">
-        </div>
-        <div class="form-group">
-          <label for="nameEnglish" id="labelEnglish">Name (English) <span class="optional">(optional)</span></label>
-          <input type="text" id="nameEnglish" placeholder="e.g: Rajesh Kumar">
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <span class="stat-icon">📋</span>
+        <div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">മൊത്തം എൻട്രികൾ</div>
         </div>
       </div>
-
-      <div class="form-group" id="countGroup" style="display:none;">
-        <label for="familyCount">എത്ര ആൾക്കാർ വരും? <span class="required">*</span></label>
-        <div class="count-input-wrap">
-          <button type="button" class="count-btn" id="decreaseBtn">−</button>
-          <input type="number" id="familyCount" min="1" value="1">
-          <button type="button" class="count-btn" id="increaseBtn">+</button>
+      <div class="stat-card people">
+        <span class="stat-icon">👥</span>
+        <div>
+          <div class="stat-value" id="statPeople">0</div>
+          <div class="stat-label">മൊത്തം ആളുകൾ</div>
         </div>
       </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="phone">ഫോൺ നമ്പർ <span class="optional">(optional)</span></label>
-          <input type="tel" id="phone" placeholder="+91 9876543210">
-        </div>
-        <div class="form-group">
-          <label for="relation">ബന്ധം <span class="optional">(optional)</span></label>
-          <select id="relation">
-            <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
-            <option value="ബന്ധു">ബന്ധു</option>
-            <option value="സുഹൃത്ത്">സുഹൃത്ത്</option>
-            <option value="സഹപ്രവർത്തകൻ">സഹപ്രവർത്തകൻ</option>
-            <option value="അയൽക്കാരൻ">അയൽക്കാരൻ</option>
-            <option value="കുടുംബം">കുടുംബം</option>
-            <option value="മറ്റുള്ളവ">മറ്റുള്ളവ</option>
-          </select>
+      <div class="stat-card families">
+        <span class="stat-icon">🏠</span>
+        <div>
+          <div class="stat-value" id="statFamilies">0</div>
+          <div class="stat-label">കുടുംബങ്ങൾ</div>
         </div>
       </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>ക്ഷണം നൽകിയിട്ടുണ്ടോ?</label>
-          <div class="radio-group">
-            <label class="radio-label">
-              <input type="radio" name="invited" value="വിളിച്ചു" checked> വിളിച്ചു
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="invited" value="വിളിച്ചിട്ടില്ല"> വിളിച്ചിട്ടില്ല
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>വരുമോ?</label>
-          <div class="radio-group">
-            <label class="radio-label coming">
-              <input type="radio" name="attendance" value="വരും" checked> വരും
-            </label>
-            <label class="radio-label not-coming">
-              <input type="radio" name="attendance" value="വരില്ല"> വരില്ല
-            </label>
-            <label class="radio-label maybe">
-              <input type="radio" name="attendance" value="സംശയം"> സംശയം
-            </label>
-          </div>
+      <div class="stat-card called">
+        <span class="stat-icon">📞</span>
+        <div>
+          <div class="stat-value" id="statCalled">0</div>
+          <div class="stat-label">വിളിച്ചവർ</div>
         </div>
       </div>
-
-      <div class="form-group">
-        <label for="notes">കുറിപ്പുകൾ <span class="optional">(optional)</span></label>
-        <textarea id="notes" rows="2" placeholder="അധിക വിവരങ്ങൾ..."></textarea>
+      <div class="stat-card coming">
+        <span class="stat-icon">✅</span>
+        <div>
+          <div class="stat-value" id="statComing">0</div>
+          <div class="stat-label">വരുന്നവർ</div>
+        </div>
       </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" id="submitBtn">💾 സേവ് ചെയ്യുക</button>
-        <button type="button" class="btn btn-secondary" id="cancelBtn" style="display:none;">❌ റദ്ദാക്കുക</button>
-      </div>
-    </form>
-  </section>
-
-  <!-- List -->
-  <section class="list-section">
-    <div class="list-header">
-      <h2>📋 വിവരങ്ങൾ <span id="countBadge" style="color:var(--text-light);font-size:0.9rem;font-weight:400;"></span></h2>
-      <div class="list-controls">
-        <input type="text" id="searchInput" placeholder="🔍 തിരയുക...">
-        <select id="filterSelect">
-          <option value="all">എല്ലാം</option>
-          <option value="individual">👤 വ്യക്തികൾ മാത്രം</option>
-          <option value="family">🏠 കുടുംബങ്ങൾ മാത്രം</option>
-          <option value="വിളിച്ചു">വിളിച്ചവർ</option>
-          <option value="വിളിച്ചിട്ടില്ല">വിളിച്ചിട്ടില്ലാത്തവർ</option>
-          <option value="വരും">വരുന്നവർ</option>
-          <option value="വരില്ല">വരാത്തവർ</option>
-          <option value="സംശയം">സംശയം</option>
-        </select>
-        <button class="btn btn-export" id="exportBtn">⬇️ CSV</button>
-        <button class="btn btn-danger" id="clearAllBtn">🗑️ എല്ലാം മായ്ക്കുക</button>
+      <div class="stat-card not-coming">
+        <span class="stat-icon">❌</span>
+        <div>
+          <div class="stat-value" id="statNotComing">0</div>
+          <div class="stat-label">വരാത്തവർ</div>
+        </div>
       </div>
     </div>
 
-    <div class="table-wrapper">
-      <table id="guestTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Type</th>
-            <th>പേര് (മലയാളം)</th>
-            <th>Name (English)</th>
-            <th>ആൾക്കാർ</th>
-            <th>ഫോൺ</th>
-            <th>ബന്ധം</th>
-            <th>ക്ഷണം</th>
-            <th>വരുമോ?</th>
-            <th>കുറിപ്പ്</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="guestTableBody"></tbody>
-      </table>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="പേര്, ഫോൺ എന്നിവ തിരയുക...">
+      </div>
+      <select id="filterSelect">
+        <option value="all">എല്ലാം</option>
+        <option value="individual">👤 വ്യക്തികൾ മാത്രം</option>
+        <option value="family">🏠 കുടുംബങ്ങൾ മാത്രം</option>
+        <option value="വിളിച്ചു">വിളിച്ചവർ</option>
+        <option value="വിളിച്ചിട്ടില്ല">വിളിച്ചിട്ടില്ലാത്തവർ</option>
+        <option value="വരും">വരുന്നവർ</option>
+        <option value="വരില്ല">വരാത്തവർ</option>
+        <option value="സംശയം">സംശയം</option>
+      </select>
+      <div class="toolbar-actions">
+        <button class="btn btn-ghost" id="exportBtn" type="button">⬇️ CSV</button>
+        <button class="btn btn-ghost danger" id="clearAllBtn" type="button">🗑️ മായ്ക്കുക</button>
+        <button class="btn btn-primary" id="addBtn" type="button">➕ പുതിയ എൻട്രി</button>
+      </div>
+    </div>
+
+    <!-- List -->
+    <section class="list-section">
+      <div class="list-section-header">
+        <h2>📋 വിവരങ്ങൾ <span id="countBadge"></span></h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="guestTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>പേര്</th>
+              <th>ആൾക്കാർ</th>
+              <th>ഫോൺ</th>
+              <th>ബന്ധം</th>
+              <th>ക്ഷണം</th>
+              <th>വരുമോ?</th>
+              <th>കുറിപ്പ്</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="guestTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="guest-cards" id="guestCards"></div>
+
       <div id="loadingState" class="loading-state">
-        <div class="spinner"></div>
-        <p>ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>
+        <table style="width:100%;"><tbody>
+          <tr class="skeleton-row"><td colspan="10"><div class="skeleton-bar"></div></td></tr>
+          <tr class="skeleton-row"><td colspan="10"><div class="skeleton-bar"></div></td></tr>
+          <tr class="skeleton-row"><td colspan="10"><div class="skeleton-bar"></div></td></tr>
+        </tbody></table>
       </div>
-      <div id="emptyState" class="empty-state hidden">
-        <p>📭 ഇതുവരെ ആരെയും ചേർത്തിട്ടില്ല</p>
-      </div>
-    </div>
-  </section>
 
-</div>
+      <div id="emptyState" class="empty-state hidden">
+        <span class="emoji">📭</span>
+        <p>ഇതുവരെ ആരെയും ചേർത്തിട്ടില്ല</p>
+        <button class="btn btn-primary" id="emptyAddBtn" type="button">➕ ആദ്യ എൻട്രി ചേർക്കുക</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Mobile FAB -->
+  <button class="fab" id="fabAdd" title="പുതിയ എൻട്രി" type="button">+</button>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="formTitle">➕ പുതിയ എൻട്രി ചേർക്കുക</h2>
+        <button class="icon-btn" id="closeModalBtn" style="background:var(--surface-alt);color:var(--text);" type="button">✕</button>
+      </div>
+
+      <form id="guestForm">
+        <div class="modal-body">
+          <input type="hidden" id="editId">
+          <input type="hidden" id="entryType" value="individual">
+
+          <div class="type-toggle" id="typeToggle">
+            <button type="button" class="type-btn active" data-type="individual">👤 വ്യക്തി</button>
+            <button type="button" class="type-btn" data-type="family">🏠 കുടുംബം</button>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nameMalayalam" id="labelMalayalam">പേര് (മലയാളം) <span class="optional">(optional)</span></label>
+              <input type="text" id="nameMalayalam" placeholder="ഉദാ: രാജേഷ് കുമാർ">
+            </div>
+            <div class="form-group">
+              <label for="nameEnglish" id="labelEnglish">Name (English) <span class="optional">(optional)</span></label>
+              <input type="text" id="nameEnglish" placeholder="e.g: Rajesh Kumar">
+            </div>
+          </div>
+
+          <div class="form-group" id="countGroup" style="display:none;">
+            <label for="familyCount">എത്ര ആൾക്കാർ വരും? <span class="required">*</span></label>
+            <div class="count-input-wrap">
+              <button type="button" class="count-btn" id="decreaseBtn">−</button>
+              <input type="number" id="familyCount" min="1" value="1">
+              <button type="button" class="count-btn" id="increaseBtn">+</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">ഫോൺ നമ്പർ <span class="optional">(optional)</span></label>
+              <input type="tel" id="phone" placeholder="+91 9876543210">
+            </div>
+            <div class="form-group">
+              <label for="relation">ബന്ധം <span class="optional">(optional)</span></label>
+              <select id="relation">
+                <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
+                <option value="ബന്ധു">ബന്ധു</option>
+                <option value="സുഹൃത്ത്">സുഹൃത്ത്</option>
+                <option value="സഹപ്രവർത്തകൻ">സഹപ്രവർത്തകൻ</option>
+                <option value="അയൽക്കാരൻ">അയൽക്കാരൻ</option>
+                <option value="കുടുംബം">കുടുംബം</option>
+                <option value="മറ്റുള്ളവ">മറ്റുള്ളവ</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>ക്ഷണം നൽകിയിട്ടുണ്ടോ?</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="invited" value="വിളിച്ചു" checked> വിളിച്ചു
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="invited" value="വിളിച്ചിട്ടില്ല"> വിളിച്ചിട്ടില്ല
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>വരുമോ?</label>
+              <div class="radio-group">
+                <label class="radio-label coming">
+                  <input type="radio" name="attendance" value="വരും" checked> വരും
+                </label>
+                <label class="radio-label not-coming">
+                  <input type="radio" name="attendance" value="വരില്ല"> വരില്ല
+                </label>
+                <label class="radio-label maybe">
+                  <input type="radio" name="attendance" value="സംശയം"> സംശയം
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">കുറിപ്പുകൾ <span class="optional">(optional)</span></label>
+            <textarea id="notes" rows="2" placeholder="അധിക വിവരങ്ങൾ..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" id="submitBtn">💾 സേവ് ചെയ്യുക</button>
+          <button type="button" class="btn btn-ghost" id="cancelBtn">❌ റദ്ദാക്കുക</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
 
 <script>
 // Auto-detects dev vs. production so this file works unmodified in both places:
@@ -810,6 +1105,7 @@ const formTitle = document.getElementById('formTitle');
 const submitBtn = document.getElementById('submitBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 const guestTableBody = document.getElementById('guestTableBody');
+const guestCards = document.getElementById('guestCards');
 const emptyState = document.getElementById('emptyState');
 const loadingState = document.getElementById('loadingState');
 const searchInput = document.getElementById('searchInput');
@@ -820,9 +1116,17 @@ const countBadge = document.getElementById('countBadge');
 const typeToggle = document.getElementById('typeToggle');
 const connDot = document.getElementById('connDot');
 const connText = document.getElementById('connText');
+const themeToggle = document.getElementById('themeToggle');
+const modalOverlay = document.getElementById('modalOverlay');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const addBtn = document.getElementById('addBtn');
+const fabAdd = document.getElementById('fabAdd');
+const emptyAddBtn = document.getElementById('emptyAddBtn');
+const toastStack = document.getElementById('toastStack');
 
 // ==================== Init ====================
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   attachListeners();
   fetchGuests();
   // ഓരോ 10 സെക്കൻഡിലും auto-refresh
@@ -831,12 +1135,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function attachListeners() {
   form.addEventListener('submit', handleSubmit);
-  cancelBtn.addEventListener('click', cancelEdit);
+  cancelBtn.addEventListener('click', closeModal);
   searchInput.addEventListener('input', render);
   filterSelect.addEventListener('change', render);
   exportBtn.addEventListener('click', exportCSV);
   clearAllBtn.addEventListener('click', clearAll);
   guestTableBody.addEventListener('click', handleTableClick);
+  guestCards.addEventListener('click', handleTableClick);
+  themeToggle.addEventListener('click', toggleTheme);
+
+  addBtn.addEventListener('click', () => openModal());
+  fabAdd.addEventListener('click', () => openModal());
+  emptyAddBtn.addEventListener('click', () => openModal());
+  closeModalBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+  });
 
   typeToggle.addEventListener('click', (e) => {
     const btn = e.target.closest('.type-btn');
@@ -859,6 +1176,36 @@ function attachListeners() {
   });
 }
 
+// ==================== Theme ====================
+function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (e) {}
+  const theme = saved || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  try { localStorage.setItem('theme', next); } catch (e) {}
+}
+
+// ==================== Modal ====================
+function openModal() {
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => nameEnglish.focus(), 150);
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+  cancelEdit();
+}
+
 // ==================== Connection Status ====================
 function setConnStatus(status, text) {
   connDot.className = 'conn-dot ' + status;
@@ -872,12 +1219,12 @@ async function fetchGuests() {
     if (!res.ok) throw new Error('Fetch failed');
 
     guests = await res.json();
-    loadingState.style.display = 'none';
+    loadingState.classList.add('hidden');
     setConnStatus('online', '✅ കണക്ട് ചെയ്തു');
     render();
   } catch (err) {
     console.error('Fetch error:', err);
-    loadingState.style.display = 'none';
+    loadingState.classList.add('hidden');
     setConnStatus('offline', '❌ കണക്ഷൻ പ്രശ്നം');
     showToast('ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല!', 'error');
   }
@@ -979,7 +1326,7 @@ async function handleSubmit(e) {
       await createGuest(guestData);
     }
     showToast(editMode ? '✏️ അപ്ഡേറ്റ് ചെയ്തു!' : '✅ ചേർത്തു!');
-    cancelEdit();
+    closeModal();
     await fetchGuests();
   } catch (err) {
     console.error('Save error:', err);
@@ -1035,9 +1382,8 @@ function startEdit(id) {
 
   formTitle.textContent = '✏️ വിവരങ്ങൾ തിരുത്തുക';
   submitBtn.textContent = '💾 അപ്ഡേറ്റ് ചെയ്യുക';
-  cancelBtn.style.display = 'inline-block';
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  openModal();
 }
 
 function cancelEdit() {
@@ -1047,7 +1393,6 @@ function cancelEdit() {
   switchType('individual');
   formTitle.textContent = '➕ പുതിയ എൻട്രി ചേർക്കുക';
   submitBtn.textContent = '💾 സേവ് ചെയ്യുക';
-  cancelBtn.style.display = 'none';
 }
 
 async function deleteGuest(id) {
@@ -1102,6 +1447,7 @@ function render() {
   });
 
   guestTableBody.innerHTML = '';
+  guestCards.innerHTML = '';
 
   if (filtered.length === 0) {
     emptyState.classList.remove('hidden');
@@ -1109,13 +1455,13 @@ function render() {
     emptyState.classList.add('hidden');
     filtered.forEach((g, idx) => {
       const isFamily = g.type === 'family';
-      const tr = document.createElement('tr');
-      if (isFamily) tr.classList.add('family-row');
-
       const countDisplay = isFamily
         ? `<span class="count-badge">👥 ${g.count || 1}</span>`
         : '1';
+      const initials = getInitials(g.nameEnglish || g.nameMalayalam);
 
+      const tr = document.createElement('tr');
+      if (isFamily) tr.classList.add('family-row');
       tr.innerHTML = `
         <td>${idx + 1}</td>
         <td>
@@ -1123,8 +1469,15 @@ function render() {
             ${isFamily ? '🏠 കുടുംബം' : '👤 വ്യക്തി'}
           </span>
         </td>
-        <td><strong>${escapeHtml(g.nameMalayalam || '-')}</strong></td>
-        <td>${escapeHtml(g.nameEnglish || '-')}</td>
+        <td>
+          <div class="name-cell">
+            <span class="avatar">${initials}</span>
+            <div class="name-text">
+              <strong>${escapeHtml(g.nameMalayalam || g.nameEnglish || '-')}</strong>
+              ${g.nameMalayalam && g.nameEnglish ? `<span>${escapeHtml(g.nameEnglish)}</span>` : ''}
+            </div>
+          </div>
+        </td>
         <td>${countDisplay}</td>
         <td>${escapeHtml(g.phone || '-')}</td>
         <td>${escapeHtml(g.relation || '-')}</td>
@@ -1137,11 +1490,47 @@ function render() {
         </td>
       `;
       guestTableBody.appendChild(tr);
+
+      const card = document.createElement('div');
+      card.className = 'guest-card' + (isFamily ? ' family-row' : '');
+      card.innerHTML = `
+        <div class="guest-card-top">
+          <div class="name-cell">
+            <span class="avatar">${initials}</span>
+            <div class="name-text">
+              <strong>${escapeHtml(g.nameMalayalam || g.nameEnglish || '-')}</strong>
+              ${g.nameMalayalam && g.nameEnglish ? `<span>${escapeHtml(g.nameEnglish)}</span>` : ''}
+            </div>
+          </div>
+          <span class="type-badge ${isFamily ? 'type-family' : 'type-individual'}">
+            ${isFamily ? '🏠' : '👤'} ${countDisplay}
+          </span>
+        </div>
+        ${g.phone ? `<div class="meta-row">📞 ${escapeHtml(g.phone)}</div>` : ''}
+        ${g.relation ? `<div class="meta-row">🔗 ${escapeHtml(g.relation)}</div>` : ''}
+        ${g.notes ? `<div class="meta-row">📝 ${escapeHtml(g.notes)}</div>` : ''}
+        <div class="badges-row">
+          ${invitedBadge(g.invited)}
+          ${attendanceBadge(g.attendance)}
+        </div>
+        <div class="card-actions">
+          <button class="action-btn edit-btn" data-id="${g._id}">✏️ തിരുത്തുക</button>
+          <button class="action-btn delete-btn" data-id="${g._id}">🗑️ നീക്കം ചെയ്യുക</button>
+        </div>
+      `;
+      guestCards.appendChild(card);
     });
   }
 
   countBadge.textContent = `(${filtered.length}/${guests.length})`;
   updateStats();
+}
+
+function getInitials(name) {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  const letters = parts.slice(0, 2).map(p => p[0]).join('');
+  return letters.toUpperCase();
 }
 
 function invitedBadge(val) {
@@ -1164,12 +1553,30 @@ function updateStats() {
   const comingPeople = comingEntries.reduce((sum, g) => sum + (g.count || 1), 0);
   const notComing = guests.filter(g => g.attendance === 'വരില്ല').length;
 
-  document.getElementById('statTotal').textContent = totalEntries;
-  document.getElementById('statPeople').textContent = totalPeople;
-  document.getElementById('statFamilies').textContent = families;
-  document.getElementById('statCalled').textContent = called;
-  document.getElementById('statComing').textContent = comingPeople;
-  document.getElementById('statNotComing').textContent = notComing;
+  animateValue('statTotal', totalEntries);
+  animateValue('statPeople', totalPeople);
+  animateValue('statFamilies', families);
+  animateValue('statCalled', called);
+  animateValue('statComing', comingPeople);
+  animateValue('statNotComing', notComing);
+}
+
+const statCache = {};
+function animateValue(id, target) {
+  const el = document.getElementById(id);
+  const from = statCache[id] || 0;
+  statCache[id] = target;
+  if (from === target) { el.textContent = target; return; }
+
+  const duration = 400;
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const value = Math.round(from + (target - from) * progress);
+    el.textContent = value;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
 // ==================== Export CSV ====================
@@ -1196,7 +1603,7 @@ function exportCSV() {
     .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
     .join('\n');
 
-  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -1213,18 +1620,18 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+const TOAST_ICONS = { success: '✅', error: '⚠️', info: 'ℹ️' };
+
 function showToast(msg, type = 'success') {
-  let toast = document.querySelector('.toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.className = 'toast';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
+  const toast = document.createElement('div');
   toast.className = 'toast ' + type;
-  toast.classList.add('show');
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+  toast.innerHTML = `<span>${TOAST_ICONS[type] || ''}</span><span>${escapeHtml(msg)}</span>`;
+  toastStack.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('leaving');
+    setTimeout(() => toast.remove(), 200);
+  }, 2800);
 }
 </script>
 </body>

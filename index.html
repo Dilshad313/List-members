@@ -780,9 +780,13 @@ tbody tr.family-row:hover {
 </div>
 
 <script>
-// ⚠️ Deploy the backend (see /backend) and replace this with its public URL,
-// e.g. "https://your-app.onrender.com/api"
-const API_URL = "http://localhost:5000/api";
+// Auto-detects dev vs. production so this file works unmodified in both places:
+// locally (served from localhost / 127.0.0.1) it talks to `node server.js`,
+// everywhere else (e.g. GitHub Pages) it talks to the deployed Vercel backend.
+const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+const API_URL = isLocal
+  ? "http://localhost:5000/api"
+  : "https://list-members.vercel.app/api";
 
 // ==================== State ====================
 let guests = [];

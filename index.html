@@ -431,8 +431,9 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   flex-shrink: 0;
 }
 
-.name-text strong { display: block; font-size: 0.92rem; }
-.name-text span { font-size: 0.78rem; color: var(--text-light); }
+.name-text { min-width: 0; }
+.name-text strong { display: block; font-size: 0.92rem; overflow-wrap: anywhere; }
+.name-text span { font-size: 0.78rem; color: var(--text-light); overflow-wrap: anywhere; }
 
 .type-badge, .count-badge, .badge {
   display: inline-block;
@@ -490,6 +491,7 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 8px;
 }
@@ -505,6 +507,7 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   font-size: 0.82rem;
   color: var(--text-light);
   margin-bottom: 3px;
+  overflow-wrap: anywhere;
 }
 
 .guest-card .card-actions {
@@ -637,6 +640,11 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   display: flex;
   gap: 10px;
   flex-shrink: 0;
+}
+
+.modal-footer .btn {
+  flex: 1;
+  justify-content: center;
 }
 
 /* Entry Type Toggle */
@@ -832,6 +840,34 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   .stat-value { font-size: 1.3rem; }
   .toast-stack { left: 16px; right: 16px; bottom: 90px; }
   .toast { justify-content: center; }
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal { max-width: 100%; max-height: 92vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .modal-overlay .modal { transform: translateY(100%); }
+  .modal-overlay.open .modal { transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .topbar { padding: 12px 14px; }
+  .brand { font-size: 0.98rem; gap: 8px; }
+  .brand .ring { font-size: 1.3rem; }
+  .icon-btn { width: 34px; height: 34px; font-size: 0.95rem; }
+  .conn-pill { padding: 6px 10px; }
+  .conn-pill span:last-child { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 12px; gap: 10px; }
+  .stat-icon { width: 38px; height: 38px; font-size: 1.15rem; border-radius: 11px; }
+  .stat-value { font-size: 1.1rem; }
+  .stat-label { font-size: 0.68rem; }
+  .toolbar { padding: 12px; }
+  .search-wrap input, .toolbar select { font-size: 0.85rem; padding: 10px 12px 10px 34px; }
+  .toolbar select { padding: 10px 12px; }
+  .toolbar-actions .btn { font-size: 0.8rem; padding: 10px 12px; }
+  .modal-header { padding: 16px 18px; }
+  .modal-body { padding: 18px; }
+  .modal-footer { padding: 14px 18px; }
+  .type-btn { font-size: 0.8rem; padding: 9px 6px; }
+  .radio-label { font-size: 0.76rem; padding: 7px 10px; }
+  .guest-card { padding: 12px; }
 }
 </style>
 </head>

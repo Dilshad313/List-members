@@ -280,7 +280,7 @@ body {
   padding: 11px 14px 11px 36px;
   border: 2px solid var(--border);
   border-radius: 10px;
-  font-size: 0.9rem;
+  font-size: 16px; /* keep >= 16px to avoid iOS Safari auto-zoom on focus */
   background: var(--surface-alt);
   color: var(--text);
 }
@@ -289,7 +289,7 @@ body {
   padding: 11px 14px;
   border: 2px solid var(--border);
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 16px; /* keep >= 16px to avoid iOS Safari auto-zoom on focus */
   background: var(--surface-alt);
   color: var(--text);
   flex: 0 0 auto;
@@ -605,6 +605,7 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   width: 100%;
   max-width: 620px;
   max-height: 90vh;
+  max-height: 90dvh;
   display: flex;
   flex-direction: column;
   transform: translateY(24px) scale(0.97);
@@ -613,6 +614,15 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
 
 .modal-overlay.open .modal {
   transform: translateY(0) scale(1);
+}
+
+/* The <form> sits between .modal and .modal-body/.modal-footer, so it must
+   itself participate in the column flex layout (and be allowed to shrink)
+   for the max-height constraint above to ever reach .modal-body's scroll. */
+.modal form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .modal-header {
@@ -632,6 +642,10 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
 .modal-body {
   padding: 22px 24px;
   overflow-y: auto;
+  /* Flex items default to min-height:auto (their content size), which silently
+     defeats overflow-y:auto and lets the modal grow past its max-height instead
+     of scrolling internally. min-height:0 lets it actually shrink and scroll. */
+  min-height: 0;
 }
 
 .modal-footer {
@@ -645,6 +659,8 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
 .modal-footer .btn {
   flex: 1;
   justify-content: center;
+  min-width: 0; /* let the buttons actually shrink to share the row instead of
+                   locking to their nowrap text width and overflowing */
 }
 
 /* Entry Type Toggle */
@@ -709,10 +725,14 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   padding: 11px 14px;
   border: 2px solid var(--border);
   border-radius: 8px;
-  font-size: 0.92rem;
+  /* Must stay >= 16px: iOS Safari force-zooms the page on focus for any
+     text input/select/textarea with a smaller computed font-size, which is
+     what made the Add form look "broken" on real phones. */
+  font-size: 16px;
   transition: all 0.2s;
   background: var(--surface-alt);
   color: var(--text);
+  width: 100%;
 }
 
 .form-group input:focus,
@@ -841,7 +861,7 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   .toast-stack { left: 16px; right: 16px; bottom: 90px; }
   .toast { justify-content: center; }
   .modal-overlay { padding: 0; align-items: flex-end; }
-  .modal { max-width: 100%; max-height: 92vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .modal { max-width: 100%; max-height: 92vh; max-height: 92dvh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
   .modal-overlay .modal { transform: translateY(100%); }
   .modal-overlay.open .modal { transform: translateY(0); }
 }
@@ -859,7 +879,7 @@ tbody tr.family-row:hover { filter: brightness(0.97); }
   .stat-value { font-size: 1.1rem; }
   .stat-label { font-size: 0.68rem; }
   .toolbar { padding: 12px; }
-  .search-wrap input, .toolbar select { font-size: 0.85rem; padding: 10px 12px 10px 34px; }
+  .search-wrap input, .toolbar select { padding: 10px 12px 10px 34px; }
   .toolbar select { padding: 10px 12px; }
   .toolbar-actions .btn { font-size: 0.8rem; padding: 10px 12px; }
   .modal-header { padding: 16px 18px; }
@@ -1233,7 +1253,12 @@ function toggleTheme() {
 function openModal() {
   modalOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  setTimeout(() => nameEnglish.focus(), 150);
+  // Only auto-focus (and pop the keyboard) on devices with a precise pointer —
+  // on touch devices this used to open the keyboard before the user tapped
+  // anything, shrinking the viewport mid-animation.
+  if (window.matchMedia('(pointer: fine)').matches) {
+    setTimeout(() => nameEnglish.focus(), 150);
+  }
 }
 
 function closeModal() {

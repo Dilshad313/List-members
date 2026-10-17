@@ -61,6 +61,38 @@ body {
   letter-spacing: 2px;
 }
 
+/* Connection Status */
+.conn-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 auto 15px;
+  width: fit-content;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.conn-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #adb5bd;
+}
+
+.conn-dot.online { background: var(--success); animation: pulse 2s infinite; }
+.conn-dot.offline { background: var(--danger); }
+.conn-dot.loading { background: var(--warning); animation: pulse 1s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 /* Stats */
 .stats-grid {
   display: grid;
@@ -206,7 +238,7 @@ body {
   box-shadow: 0 0 0 3px rgba(214,51,108,0.1);
 }
 
-/* Count input with buttons */
+/* Count input with +/- */
 .count-input-wrap {
   display: flex;
   align-items: center;
@@ -313,6 +345,7 @@ body {
 
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), #7048e8);
@@ -320,7 +353,7 @@ body {
   box-shadow: 0 4px 10px rgba(214,51,108,0.3);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   box-shadow: 0 6px 14px rgba(214,51,108,0.4);
 }
 
@@ -485,6 +518,26 @@ tbody tr.family-row:hover {
 
 .empty-state.hidden { display: none; }
 
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f0f0f0;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .toast {
   position: fixed;
   bottom: 20px;
@@ -529,6 +582,12 @@ tbody tr.family-row:hover {
     <h1>💍 വിവാഹ ക്ഷണ ട്രാക്കർ</h1>
     <p class="subtitle">Wedding Invitation Tracker</p>
   </header>
+
+  <!-- Connection Status -->
+  <div class="conn-status">
+    <span class="conn-dot loading" id="connDot"></span>
+    <span id="connText">കണക്ട് ചെയ്യുന്നു...</span>
+  </div>
 
   <!-- Stats -->
   <div class="stats-grid">
@@ -580,7 +639,6 @@ tbody tr.family-row:hover {
   <section class="form-section">
     <h2 id="formTitle">➕ പുതിയ എൻട്രി ചേർക്കുക</h2>
 
-    <!-- Type Toggle -->
     <div class="type-toggle" id="typeToggle">
       <button type="button" class="type-btn active" data-type="individual">👤 വ്യക്തി (Individual)</button>
       <button type="button" class="type-btn" data-type="family">🏠 കുടുംബം (Family)</button>
@@ -590,7 +648,6 @@ tbody tr.family-row:hover {
       <input type="hidden" id="editId">
       <input type="hidden" id="entryType" value="individual">
 
-      <!-- Names -->
       <div class="form-row">
         <div class="form-group">
           <label for="nameMalayalam" id="labelMalayalam">പേര് (മലയാളം) <span class="optional">(optional)</span></label>
@@ -602,7 +659,6 @@ tbody tr.family-row:hover {
         </div>
       </div>
 
-      <!-- Family Count (only for family) -->
       <div class="form-group" id="countGroup" style="display:none;">
         <label for="familyCount">എത്ര ആൾക്കാർ വരും? <span class="required">*</span></label>
         <div class="count-input-wrap">
@@ -612,7 +668,6 @@ tbody tr.family-row:hover {
         </div>
       </div>
 
-      <!-- Phone + Relation -->
       <div class="form-row">
         <div class="form-group">
           <label for="phone">ഫോൺ നമ്പർ <span class="optional">(optional)</span></label>
@@ -632,7 +687,6 @@ tbody tr.family-row:hover {
         </div>
       </div>
 
-      <!-- Invited + Attendance -->
       <div class="form-row">
         <div class="form-group">
           <label>ക്ഷണം നൽകിയിട്ടുണ്ടോ?</label>
@@ -713,7 +767,11 @@ tbody tr.family-row:hover {
         </thead>
         <tbody id="guestTableBody"></tbody>
       </table>
-      <div id="emptyState" class="empty-state">
+      <div id="loadingState" class="loading-state">
+        <div class="spinner"></div>
+        <p>ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>
+      </div>
+      <div id="emptyState" class="empty-state hidden">
         <p>📭 ഇതുവരെ ആരെയും ചേർത്തിട്ടില്ല</p>
       </div>
     </div>
@@ -722,12 +780,14 @@ tbody tr.family-row:hover {
 </div>
 
 <script>
+// ⚠️ Deploy the backend (see /backend) and replace this with its public URL,
+// e.g. "https://your-app.onrender.com/api"
+const API_URL = "http://localhost:5000/api";
+
 // ==================== State ====================
 let guests = [];
 let editMode = false;
 let currentType = 'individual';
-
-const STORAGE_KEY = 'weddingGuests';
 
 // ==================== DOM ====================
 const form = document.getElementById('guestForm');
@@ -747,18 +807,22 @@ const submitBtn = document.getElementById('submitBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 const guestTableBody = document.getElementById('guestTableBody');
 const emptyState = document.getElementById('emptyState');
+const loadingState = document.getElementById('loadingState');
 const searchInput = document.getElementById('searchInput');
 const filterSelect = document.getElementById('filterSelect');
 const exportBtn = document.getElementById('exportBtn');
 const clearAllBtn = document.getElementById('clearAllBtn');
 const countBadge = document.getElementById('countBadge');
 const typeToggle = document.getElementById('typeToggle');
+const connDot = document.getElementById('connDot');
+const connText = document.getElementById('connText');
 
 // ==================== Init ====================
 document.addEventListener('DOMContentLoaded', () => {
-  loadFromStorage();
-  render();
   attachListeners();
+  fetchGuests();
+  // ഓരോ 10 സെക്കൻഡിലും auto-refresh
+  setInterval(fetchGuests, 10000);
 });
 
 function attachListeners() {
@@ -770,14 +834,12 @@ function attachListeners() {
   clearAllBtn.addEventListener('click', clearAll);
   guestTableBody.addEventListener('click', handleTableClick);
 
-  // Type toggle
   typeToggle.addEventListener('click', (e) => {
     const btn = e.target.closest('.type-btn');
     if (!btn) return;
     switchType(btn.dataset.type);
   });
 
-  // Family count +/-
   document.getElementById('increaseBtn').addEventListener('click', () => {
     const val = parseInt(familyCount.value) || 1;
     familyCount.value = val + 1;
@@ -793,20 +855,79 @@ function attachListeners() {
   });
 }
 
+// ==================== Connection Status ====================
+function setConnStatus(status, text) {
+  connDot.className = 'conn-dot ' + status;
+  connText.textContent = text;
+}
+
+// ==================== API ====================
+async function fetchGuests() {
+  try {
+    const res = await fetch(`${API_URL}/guests`);
+    if (!res.ok) throw new Error('Fetch failed');
+
+    guests = await res.json();
+    loadingState.style.display = 'none';
+    setConnStatus('online', '✅ കണക്ട് ചെയ്തു');
+    render();
+  } catch (err) {
+    console.error('Fetch error:', err);
+    loadingState.style.display = 'none';
+    setConnStatus('offline', '❌ കണക്ഷൻ പ്രശ്നം');
+    showToast('ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല!', 'error');
+  }
+}
+
+async function createGuest(guestData) {
+  const res = await fetch(`${API_URL}/guests`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(guestData)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Create failed');
+  }
+  return res.json();
+}
+
+async function updateGuest(id, guestData) {
+  const res = await fetch(`${API_URL}/guests/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(guestData)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Update failed');
+  }
+  return res.json();
+}
+
+async function removeGuest(id) {
+  const res = await fetch(`${API_URL}/guests/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Delete failed');
+  return res.json();
+}
+
+async function removeAllGuests() {
+  const res = await fetch(`${API_URL}/guests`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Delete all failed');
+  return res.json();
+}
+
 // ==================== Type Switch ====================
 function switchType(type) {
   currentType = type;
   entryTypeInput.value = type;
 
-  // Update buttons
   document.querySelectorAll('.type-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.type === type);
   });
 
-  // Show/hide count
   countGroup.style.display = type === 'family' ? 'flex' : 'none';
 
-  // Update labels
   if (type === 'family') {
     labelMalayalam.innerHTML = 'കുടുംബത്തിന്റെ പേര് (മലയാളം) <span class="optional">(optional)</span>';
     labelEnglish.innerHTML = 'Family Name (English) <span class="optional">(optional)</span>';
@@ -820,22 +941,8 @@ function switchType(type) {
   }
 }
 
-// ==================== Storage ====================
-function loadFromStorage() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY);
-    guests = data ? JSON.parse(data) : [];
-  } catch (e) {
-    guests = [];
-  }
-}
-
-function saveToStorage() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
-}
-
 // ==================== Form Submit ====================
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
 
   const invited = document.querySelector('input[name="invited"]:checked').value;
@@ -853,30 +960,30 @@ function handleSubmit(e) {
     count: currentType === 'family' ? Math.max(1, parseInt(familyCount.value) || 1) : 1
   };
 
-  // കുറഞ്ഞത് ഒരു പേരെങ്കിലും വേണം
   if (!guestData.nameMalayalam && !guestData.nameEnglish) {
     showToast('കുറഞ്ഞത് ഒരു പേരെങ്കിലും എഴുതണം!', 'error');
     return;
   }
 
-  if (editMode) {
-    const id = Number(editIdInput.value);
-    const index = guests.findIndex(g => g.id === id);
-    if (index !== -1) {
-      guests[index] = { ...guests[index], ...guestData };
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ സേവ് ചെയ്യുന്നു...';
+
+  try {
+    if (editMode) {
+      await updateGuest(editIdInput.value, guestData);
+    } else {
+      await createGuest(guestData);
     }
-    showToast('✏️ അപ്ഡേറ്റ് ചെയ്തു!');
+    showToast(editMode ? '✏️ അപ്ഡേറ്റ് ചെയ്തു!' : '✅ ചേർത്തു!');
     cancelEdit();
-  } else {
-    guestData.id = Date.now();
-    guestData.createdAt = new Date().toISOString();
-    guests.unshift(guestData);
-    showToast('✅ ചേർത്തു!');
+    await fetchGuests();
+  } catch (err) {
+    console.error('Save error:', err);
+    showToast('സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!', 'error');
   }
 
-  saveToStorage();
-  resetForm();
-  render();
+  submitBtn.disabled = false;
+  submitBtn.textContent = editMode ? '💾 അപ്ഡേറ്റ് ചെയ്യുക' : '💾 സേവ് ചെയ്യുക';
 }
 
 function resetForm() {
@@ -891,7 +998,7 @@ function handleTableClick(e) {
   const btn = e.target.closest('button');
   if (!btn) return;
 
-  const id = Number(btn.dataset.id);
+  const id = btn.dataset.id;
 
   if (btn.classList.contains('edit-btn')) {
     startEdit(id);
@@ -901,13 +1008,12 @@ function handleTableClick(e) {
 }
 
 function startEdit(id) {
-  const guest = guests.find(g => g.id === id);
+  const guest = guests.find(g => g._id === id);
   if (!guest) return;
 
   editMode = true;
-  editIdInput.value = guest.id;
+  editIdInput.value = guest._id;
 
-  // Switch type first
   switchType(guest.type || 'individual');
 
   nameMalayalam.value = guest.nameMalayalam || '';
@@ -917,14 +1023,17 @@ function startEdit(id) {
   notes.value = guest.notes || '';
   familyCount.value = guest.count || 1;
 
-  document.querySelector(`input[name="invited"][value="${guest.invited}"]`).checked = true;
-  document.querySelector(`input[name="attendance"][value="${guest.attendance}"]`).checked = true;
+  const invitedEl = document.querySelector(`input[name="invited"][value="${guest.invited}"]`);
+  if (invitedEl) invitedEl.checked = true;
+
+  const attEl = document.querySelector(`input[name="attendance"][value="${guest.attendance}"]`);
+  if (attEl) attEl.checked = true;
 
   formTitle.textContent = '✏️ വിവരങ്ങൾ തിരുത്തുക';
   submitBtn.textContent = '💾 അപ്ഡേറ്റ് ചെയ്യുക';
   cancelBtn.style.display = 'inline-block';
 
-  window.scrollTo({ top: form.offsetTop - 20, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function cancelEdit() {
@@ -937,25 +1046,34 @@ function cancelEdit() {
   cancelBtn.style.display = 'none';
 }
 
-function deleteGuest(id) {
-  const guest = guests.find(g => g.id === id);
+async function deleteGuest(id) {
+  const guest = guests.find(g => g._id === id);
   if (!guest) return;
   const displayName = guest.nameMalayalam || guest.nameEnglish || 'ഈ എൻട്രി';
   if (!confirm(`"${displayName}" നീക്കം ചെയ്യണോ?`)) return;
 
-  guests = guests.filter(g => g.id !== id);
-  saveToStorage();
-  render();
-  showToast('🗑️ നീക്കം ചെയ്തു', 'info');
+  try {
+    await removeGuest(id);
+    showToast('🗑️ നീക്കം ചെയ്തു', 'info');
+    await fetchGuests();
+  } catch (err) {
+    console.error('Delete error:', err);
+    showToast('നീക്കം ചെയ്യാൻ കഴിഞ്ഞില്ല!', 'error');
+  }
 }
 
-function clearAll() {
+async function clearAll() {
   if (guests.length === 0) return;
   if (!confirm('എല്ലാ വിവരങ്ങളും മായ്ക്കണോ? ഇത് തിരികെ ലഭിക്കില്ല!')) return;
-  guests = [];
-  saveToStorage();
-  render();
-  showToast('🗑️ എല്ലാം മായ്ച്ചു', 'info');
+
+  try {
+    await removeAllGuests();
+    showToast('🗑️ എല്ലാം മായ്ച്ചു', 'info');
+    await fetchGuests();
+  } catch (err) {
+    console.error('Clear all error:', err);
+    showToast('മായ്ക്കാൻ കഴിഞ്ഞില്ല!', 'error');
+  }
 }
 
 // ==================== Render ====================
@@ -963,7 +1081,7 @@ function render() {
   const search = searchInput.value.trim().toLowerCase();
   const filter = filterSelect.value;
 
-  let filtered = guests.filter(g => {
+  const filtered = guests.filter(g => {
     const matchSearch =
       (g.nameMalayalam || '').toLowerCase().includes(search) ||
       (g.nameEnglish || '').toLowerCase().includes(search) ||
@@ -1010,8 +1128,8 @@ function render() {
         <td>${attendanceBadge(g.attendance)}</td>
         <td>${escapeHtml(g.notes || '-')}</td>
         <td>
-          <button class="action-btn edit-btn" data-id="${g.id}">✏️</button>
-          <button class="action-btn delete-btn" data-id="${g.id}">🗑️</button>
+          <button class="action-btn edit-btn" data-id="${g._id}">✏️</button>
+          <button class="action-btn delete-btn" data-id="${g._id}">🗑️</button>
         </td>
       `;
       guestTableBody.appendChild(tr);
